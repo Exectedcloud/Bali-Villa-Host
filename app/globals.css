@@ -1,26 +1,141 @@
 @import "tailwindcss";
+@import "react-day-picker/style.css";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* shadcn component tokens */
+  --color-background:                var(--background);
+  --color-foreground:                var(--foreground);
+  --color-card:                      var(--card);
+  --color-card-foreground:           var(--card-foreground);
+  --color-popover:                   var(--popover);
+  --color-popover-foreground:        var(--popover-foreground);
+  --color-primary:                   var(--primary);
+  --color-primary-foreground:        var(--primary-foreground);
+  --color-secondary:                 var(--secondary);
+  --color-secondary-foreground:      var(--secondary-foreground);
+  --color-muted:                     var(--muted);
+  --color-muted-foreground:          var(--muted-foreground);
+  --color-accent:                    var(--accent);
+  --color-accent-foreground:         var(--accent-foreground);
+  --color-destructive:               var(--destructive);
+  --color-border:                    var(--border);
+  --color-input:                     var(--input);
+  --color-ring:                      var(--ring);
+  --color-chart-1:                   var(--chart-1);
+  --color-chart-2:                   var(--chart-2);
+  --color-chart-3:                   var(--chart-3);
+  --color-chart-4:                   var(--chart-4);
+  --color-chart-5:                   var(--chart-5);
+  --color-sidebar:                   var(--sidebar);
+  --color-sidebar-foreground:        var(--sidebar-foreground);
+  --color-sidebar-primary:           var(--sidebar-primary);
+  --color-sidebar-primary-foreground:var(--sidebar-primary-foreground);
+  --color-sidebar-accent:            var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border:            var(--sidebar-border);
+  --color-sidebar-ring:              var(--sidebar-ring);
+
+  /* fonts — CSS vars injected by next/font on <html> */
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans:    var(--font-inter), var(--font-noto), system-ui, sans-serif;
+  --font-mono:    var(--font-jetbrains), ui-monospace, monospace;
+
+  /* radius */
+  --radius-sm:   6px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-2xl:  16px;
+  --radius-3xl:  16px;
+  --radius-4xl:  16px;
+  --radius-full: 9999px;
+
+  /* brand colors */
+  --color-jade:        #1F6B5C;
+  --color-jade-deep:   #144A3F;
+  --color-jade-soft:   #EAF1EE;
+  --color-mist:        #9BB8B0;
+  --color-mist-deep:   #6B8A82;
+  --color-gold:        #C9A961;
+  --color-success:     #2D7A3E;
+  --color-warn:        #C47919;
+  --color-danger:      #C4393E;
+
+  /* neutrals — warm Balinese resort cream palette */
+  --color-paper:       #F2E8D6;
+  --color-surface:     #FBF5E8;
+  --color-surface-alt: #EADFC9;
+  --color-ink:         #3D2817;
+  --color-ink-soft:    #5C4534;
+  --color-ink-mute:    #8A7560;
+  --color-rule:        #D8CAB0;
+
+  /* shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.06);
+  --shadow-lg: 0 8px 28px rgba(0,0,0,.10);
+  --shadow-xl: 0 24px 64px rgba(0,0,0,.18);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --background:                  #F2E8D6;
+  --foreground:                  #3D2817;
+  --card:                        #FBF5E8;
+  --card-foreground:             #3D2817;
+  --popover:                     #FBF5E8;
+  --popover-foreground:          #3D2817;
+  --primary:                     #1F6B5C;
+  --primary-foreground:          #FFFFFF;
+  --secondary:                   #EADFC9;
+  --secondary-foreground:        #3D2817;
+  --muted:                       #EADFC9;
+  --muted-foreground:            #8A7560;
+  --accent:                      #EAF1EE;
+  --accent-foreground:           #1F6B5C;
+  --destructive:                 #C4393E;
+  --border:                      #D8CAB0;
+  --input:                       #D8CAB0;
+  --ring:                        #1F6B5C;
+  --chart-1:                     #1F6B5C;
+  --chart-2:                     #9BB8B0;
+  --chart-3:                     #C9A961;
+  --chart-4:                     #C47919;
+  --chart-5:                     #C4393E;
+  --radius:                      0.75rem;
+  --sidebar:                     #F2E8D6;
+  --sidebar-foreground:          #3D2817;
+  --sidebar-primary:             #1F6B5C;
+  --sidebar-primary-foreground:  #FFFFFF;
+  --sidebar-accent:              #EAF1EE;
+  --sidebar-accent-foreground:   #1F6B5C;
+  --sidebar-border:              #D8CAB0;
+  --sidebar-ring:                #1F6B5C;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-paper text-ink font-sans;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-alt) 0%,
+    var(--color-surface)     50%,
+    var(--color-surface-alt) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
 }
