@@ -5,21 +5,17 @@ import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import { api, ApiError } from '@/lib/api-client';
 
 const POLICIES = [
-  { id: 'flexible', label: 'Flexible', desc: 'Full refund up to 24 h before check-in' },
-  { id: 'moderate', label: 'Moderate', desc: 'Full refund 5+ days before; 50% within 5 days' },
-  { id: 'strict',   label: 'Strict',   desc: 'Full refund within 48 h of booking if 14+ days away' },
+  { id: 'flexible', labelKey: 'flexible', descKey: 'flexibleDesc' },
+  { id: 'moderate', labelKey: 'moderate', descKey: 'moderateDesc' },
+  { id: 'strict',   labelKey: 'strict',   descKey: 'strictDesc' },
 ];
 
-const HOUSE_RULES = [
-  { id: 'no_smoking',      label: 'No smoking' },
-  { id: 'no_parties',      label: 'No parties or events' },
-  { id: 'no_pets',         label: 'No pets' },
-  { id: 'children_ok',     label: 'Children welcome' },
-  { id: 'quiet_hours',     label: 'Quiet hours after 10 pm' },
-  { id: 'register_guests', label: 'All guests must be registered' },
+const HOUSE_RULE_KEYS = [
+  'no_smoking', 'no_parties', 'no_pets', 'children_ok', 'quiet_hours', 'register_guests',
 ];
 
 const inputCls = 'h-11 px-3.5 rounded-lg border border-rule bg-paper text-sm text-ink placeholder:text-ink-mute focus:outline-none focus:ring-2 focus:ring-jade/40 focus:border-jade transition-colors w-full';
@@ -37,6 +33,7 @@ function Toggle({ on, onToggle }) {
 }
 
 export default function ListingSettingsPage() {
+  const t = useTranslations('listingSettings');
   const { id } = useParams();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -47,7 +44,6 @@ export default function ListingSettingsPage() {
   });
 
   const villa = data?.villa;
-
   const [form, setForm] = useState(null);
 
   if (!form && villa) {
@@ -68,7 +64,7 @@ export default function ListingSettingsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['host-villas'] });
       queryClient.invalidateQueries({ queryKey: ['host-villa', id] });
-      toast.success('Settings saved');
+      toast.success(t('save'));
     },
     onError: (err) => {
       toast.error(err instanceof ApiError ? err.message : 'Failed to save settings.');
@@ -86,7 +82,7 @@ export default function ListingSettingsPage() {
 
   function handleSave() {
     const basePrice = Number(form.basePriceIdr.replace(/\D/g, ''));
-    if (!basePrice) { toast.error('Nightly price is required'); return; }
+    if (!basePrice) { toast.error(t('pricing.priceRequired')); return; }
     mutation.mutate({
       basePriceIdr: basePrice,
       cleaningFee: Number(form.cleaningFee.replace(/\D/g, '')) || 0,
@@ -120,17 +116,17 @@ export default function ListingSettingsPage() {
           <ArrowLeft className="size-4" />
         </button>
         <div>
-          <h1 className="font-display text-2xl font-medium text-ink">{villa?.titleEn || 'Listing settings'}</h1>
-          <p className="text-sm text-ink-mute mt-0.5">Pricing, rules, and availability settings</p>
+          <h1 className="font-display text-2xl font-medium text-ink">{villa?.titleEn || t('title')}</h1>
+          <p className="text-sm text-ink-mute mt-0.5">{t('subtitle')}</p>
         </div>
       </div>
 
-      {/* Nightly price */}
+      {/* Pricing */}
       <section className="bg-surface rounded-2xl border border-rule p-6 flex flex-col gap-5">
-        <h2 className="text-base font-semibold text-ink">Pricing</h2>
+        <h2 className="text-base font-semibold text-ink">{t('pricing.title')}</h2>
 
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-medium text-ink-soft">Nightly price (IDR)</label>
+          <label className="text-xs font-medium text-ink-soft">{t('pricing.nightlyPrice')}</label>
           <div className="relative">
             <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-medium text-ink-mute">Rp</span>
             <input
@@ -145,7 +141,7 @@ export default function ListingSettingsPage() {
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-medium text-ink-soft">Cleaning fee (optional)</label>
+          <label className="text-xs font-medium text-ink-soft">{t('pricing.cleaningFee')}</label>
           <div className="relative">
             <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-medium text-ink-mute">Rp</span>
             <input
@@ -162,8 +158,8 @@ export default function ListingSettingsPage() {
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-ink">Weekend premium</p>
-              <p className="text-xs text-ink-mute">Applied on Friday and Saturday nights</p>
+              <p className="text-sm font-medium text-ink">{t('pricing.weekendPremium')}</p>
+              <p className="text-xs text-ink-mute">{t('pricing.weekendPremiumHint')}</p>
             </div>
             <span className="font-mono text-sm font-semibold text-jade">+{form.weekendPremium}%</span>
           </div>
@@ -177,44 +173,30 @@ export default function ListingSettingsPage() {
             className="w-full accent-jade"
           />
           <div className="flex justify-between text-xs text-ink-mute">
-            <span>No premium</span>
-            <span>+50%</span>
+            <span>{t('pricing.noPremium')}</span>
+            <span>{t('pricing.premium50')}</span>
           </div>
         </div>
       </section>
 
       {/* Stay length */}
       <section className="bg-surface rounded-2xl border border-rule p-6 flex flex-col gap-5">
-        <h2 className="text-base font-semibold text-ink">Stay length</h2>
+        <h2 className="text-base font-semibold text-ink">{t('stayLength.title')}</h2>
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-ink-soft">Minimum nights</label>
-            <input
-              type="number"
-              min={1}
-              max={365}
-              value={form.minNights}
-              onChange={(e) => patch({ minNights: Number(e.target.value) })}
-              className={inputCls}
-            />
+            <label className="text-xs font-medium text-ink-soft">{t('stayLength.minNights')}</label>
+            <input type="number" min={1} max={365} value={form.minNights} onChange={(e) => patch({ minNights: Number(e.target.value) })} className={inputCls} />
           </div>
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-ink-soft">Maximum nights</label>
-            <input
-              type="number"
-              min={1}
-              max={365}
-              value={form.maxNights}
-              onChange={(e) => patch({ maxNights: Number(e.target.value) })}
-              className={inputCls}
-            />
+            <label className="text-xs font-medium text-ink-soft">{t('stayLength.maxNights')}</label>
+            <input type="number" min={1} max={365} value={form.maxNights} onChange={(e) => patch({ maxNights: Number(e.target.value) })} className={inputCls} />
           </div>
         </div>
       </section>
 
       {/* Cancellation policy */}
       <section className="bg-surface rounded-2xl border border-rule p-6 flex flex-col gap-4">
-        <h2 className="text-base font-semibold text-ink">Cancellation policy</h2>
+        <h2 className="text-base font-semibold text-ink">{t('cancellation.title')}</h2>
         <div className="flex flex-col gap-3">
           {POLICIES.map((p) => (
             <label
@@ -232,8 +214,10 @@ export default function ListingSettingsPage() {
                 className="mt-0.5 accent-jade shrink-0"
               />
               <div>
-                <p className={`text-sm font-semibold ${form.cancellationPolicy === p.id ? 'text-jade' : 'text-ink'}`}>{p.label}</p>
-                <p className="text-xs text-ink-mute mt-0.5">{p.desc}</p>
+                <p className={`text-sm font-semibold ${form.cancellationPolicy === p.id ? 'text-jade' : 'text-ink'}`}>
+                  {t(`cancellation.${p.labelKey}`)}
+                </p>
+                <p className="text-xs text-ink-mute mt-0.5">{t(`cancellation.${p.descKey}`)}</p>
               </div>
             </label>
           ))}
@@ -242,9 +226,9 @@ export default function ListingSettingsPage() {
 
       {/* House rules */}
       <section className="bg-surface rounded-2xl border border-rule p-6 flex flex-col gap-4">
-        <h2 className="text-base font-semibold text-ink">House rules</h2>
+        <h2 className="text-base font-semibold text-ink">{t('houseRules.title')}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {HOUSE_RULES.map(({ id: ruleId, label }) => (
+          {HOUSE_RULE_KEYS.map((ruleId) => (
             <label key={ruleId} className="flex items-center gap-3 cursor-pointer group bg-paper rounded-xl border border-rule px-4 py-3 hover:border-jade/50 transition-colors">
               <input
                 type="checkbox"
@@ -252,7 +236,9 @@ export default function ListingSettingsPage() {
                 onChange={() => toggleRule(ruleId)}
                 className="size-4 rounded accent-jade shrink-0"
               />
-              <span className="text-sm text-ink-soft group-hover:text-ink transition-colors">{label}</span>
+              <span className="text-sm text-ink-soft group-hover:text-ink transition-colors">
+                {t(`houseRules.${ruleId}`)}
+              </span>
             </label>
           ))}
         </div>
@@ -262,10 +248,8 @@ export default function ListingSettingsPage() {
       <section className="bg-surface rounded-2xl border border-rule p-6">
         <div className="flex items-start justify-between gap-6">
           <div>
-            <p className="text-sm font-semibold text-ink">Instant Book</p>
-            <p className="text-xs text-ink-mute mt-1 leading-relaxed max-w-sm">
-              When on, guests can book without your approval. When off, you review each request first.
-            </p>
+            <p className="text-sm font-semibold text-ink">{t('instantBook.title')}</p>
+            <p className="text-xs text-ink-mute mt-1 leading-relaxed max-w-sm">{t('instantBook.desc')}</p>
           </div>
           <Toggle on={form.instantBook} onToggle={() => patch({ instantBook: !form.instantBook })} />
         </div>
@@ -279,7 +263,7 @@ export default function ListingSettingsPage() {
           disabled={mutation.isPending}
           className="px-8 py-3 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep disabled:opacity-50 disabled:pointer-events-none transition-colors"
         >
-          {mutation.isPending ? 'Saving…' : 'Save changes'}
+          {mutation.isPending ? t('saving') : t('save')}
         </button>
       </div>
     </div>

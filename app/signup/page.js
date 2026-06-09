@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Eye, EyeOff, ChevronDown } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 import { api, ApiError } from '@/lib/api-client';
 
 const COUNTRY_CODES = [
@@ -20,6 +21,8 @@ const COUNTRY_CODES = [
 
 export default function SignupPage() {
   const router = useRouter();
+  const t = useTranslations('auth.signup');
+  const tNav = useTranslations('nav');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -64,7 +67,6 @@ export default function SignupPage() {
       setSubmitted(true);
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
-        // Email is already a host account — send them to log in
         setErrors({ email: 'This email is already registered as a host. Please log in instead.' });
       } else if (err instanceof ApiError && err.status === 400) {
         const data = err.data || {};
@@ -90,16 +92,15 @@ export default function SignupPage() {
       <div className="min-h-screen bg-paper flex flex-col items-center justify-center px-4 py-12">
         <Link href="/" className="flex items-center gap-2.5 mb-8">
           <Image src="/BaliVillalogo.png" alt="BaliVilla" width={160} height={40} className="h-10 w-auto" priority />
-          <span className="text-sm font-medium text-ink-mute">for Hosts</span>
+          <span className="text-sm font-medium text-ink-mute">{tNav('forHosts')}</span>
         </Link>
         <div className="w-full max-w-sm text-center">
           <div className="text-5xl mb-5">📬</div>
-          <h1 className="font-display text-2xl font-medium text-ink mb-2">Check your email</h1>
+          <h1 className="font-display text-2xl font-medium text-ink mb-2">{t('success.title')}</h1>
           <p className="text-sm text-ink-mute mb-6">Verify your address to activate your host account</p>
           <div className="bg-surface rounded-2xl border border-rule shadow-md p-6 text-left space-y-3 mb-6">
             <p className="text-sm text-ink-soft leading-relaxed">
-              We sent a verification link to{' '}
-              <span className="font-semibold text-ink">{form.email}</span>.
+              {t('success.desc', { email: form.email })}
             </p>
             <p className="text-xs text-ink-mute leading-relaxed">
               Click the link in that email to verify your account, then come back here to log in as a host.
@@ -109,7 +110,7 @@ export default function SignupPage() {
             href="/login"
             className="text-jade text-sm font-medium hover:text-jade-deep underline underline-offset-2 transition-colors"
           >
-            Back to log in
+            {t('success.loginNow')}
           </Link>
         </div>
       </div>
@@ -121,19 +122,19 @@ export default function SignupPage() {
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2.5 mb-8">
         <Image src="/BaliVillalogo.png" alt="BaliVilla" width={160} height={40} className="h-10 w-auto" priority />
-        <span className="text-sm font-medium text-ink-mute">for Hosts</span>
+        <span className="text-sm font-medium text-ink-mute">{tNav('forHosts')}</span>
       </Link>
 
       <div className="w-full max-w-sm bg-surface rounded-2xl border border-rule shadow-md p-8">
-        <h1 className="font-display text-2xl font-medium text-ink mb-1">Become a host</h1>
-        <p className="text-sm text-ink-mute mb-7">Create your free host account</p>
+        <h1 className="font-display text-2xl font-medium text-ink mb-1">{t('title')}</h1>
+        <p className="text-sm text-ink-mute mb-7">{t('subtitle')}</p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* Name row */}
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-medium text-ink-soft" htmlFor="firstName">
-                First name
+                {t('firstName')}
               </label>
               <input
                 id="firstName"
@@ -148,7 +149,7 @@ export default function SignupPage() {
             </div>
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-medium text-ink-soft" htmlFor="lastName">
-                Last name
+                {t('lastName')}
               </label>
               <input
                 id="lastName"
@@ -166,7 +167,7 @@ export default function SignupPage() {
           {/* Email */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-medium text-ink-soft" htmlFor="email">
-              Email address
+              {t('email')}
             </label>
             <input
               id="email"
@@ -183,7 +184,7 @@ export default function SignupPage() {
           {/* Phone */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-medium text-ink-soft" htmlFor="phone">
-              Phone number <span className="text-ink-mute font-normal">(optional)</span>
+              {t('phone')}
             </label>
             <div className="flex gap-2">
               <div className="relative">
@@ -214,7 +215,7 @@ export default function SignupPage() {
           {/* Password */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-medium text-ink-soft" htmlFor="password">
-              Password
+              {t('password')}
             </label>
             <div className="relative">
               <input
@@ -240,7 +241,7 @@ export default function SignupPage() {
           {/* Confirm password */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-medium text-ink-soft" htmlFor="confirmPassword">
-              Confirm password
+              {t('confirmPassword')}
             </label>
             <div className="relative">
               <input
@@ -291,14 +292,14 @@ export default function SignupPage() {
             transition={{ duration: 0.08, ease: 'linear' }}
             className="mt-1 h-11 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep disabled:opacity-60 transition-colors"
           >
-            {loading ? 'Creating account…' : 'Become a host'}
+            {loading ? t('submitting') : t('submit')}
           </motion.button>
         </form>
 
         <p className="text-center text-xs text-ink-mute mt-6">
-          Already a host?{' '}
+          {t('hasAccount')}{' '}
           <Link href="/login" className="text-jade hover:text-jade-deep font-medium transition-colors">
-            Log in
+            {t('logIn')}
           </Link>
         </p>
       </div>

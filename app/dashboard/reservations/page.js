@@ -6,32 +6,35 @@ import { Search, ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 import { api } from '@/lib/api-client';
-
-const STATUS_META = {
-  confirmed:        { label: 'Confirmed',  cls: 'bg-jade/10 text-jade' },
-  in_house:         { label: 'In-house',   cls: 'bg-success/10 text-success' },
-  completed:        { label: 'Completed',  cls: 'bg-mist/20 text-mist-deep' },
-  pending_approval: { label: 'Pending',    cls: 'bg-warn/10 text-warn' },
-  cancelled:        { label: 'Cancelled',  cls: 'bg-danger/10 text-danger' },
-};
-
-const TABS = [
-  { key: 'all',              label: 'All' },
-  { key: 'pending_approval', label: 'Pending' },
-  { key: 'confirmed',        label: 'Upcoming' },
-  { key: 'in_house',         label: 'In-house' },
-  { key: 'completed',        label: 'Completed' },
-  { key: 'cancelled',        label: 'Cancelled' },
-];
+import Avatar from '@/components/ui/Avatar';
 
 const PAGE_SIZE = 10;
 
 export default function ReservationsPage() {
+  const t  = useTranslations('reservations');
   const qc = useQueryClient();
   const [tab, setTab]       = useState('all');
   const [search, setSearch] = useState('');
   const [page, setPage]     = useState(1);
+
+  const STATUS_META = {
+    confirmed:        { label: t('status.confirmed'),       cls: 'bg-jade/10 text-jade' },
+    in_house:         { label: t('status.inHouse'),         cls: 'bg-success/10 text-success' },
+    completed:        { label: t('status.completed'),       cls: 'bg-mist/20 text-mist-deep' },
+    pending_approval: { label: t('status.pendingApproval'), cls: 'bg-warn/10 text-warn' },
+    cancelled:        { label: t('status.cancelled'),       cls: 'bg-danger/10 text-danger' },
+  };
+
+  const TABS = [
+    { key: 'all',              label: t('tabs.all') },
+    { key: 'pending_approval', label: t('tabs.pending') },
+    { key: 'confirmed',        label: t('tabs.upcoming') },
+    { key: 'in_house',         label: t('tabs.inHouse') },
+    { key: 'completed',        label: t('tabs.completed') },
+    { key: 'cancelled',        label: t('tabs.cancelled') },
+  ];
 
   const { data, isPending } = useQuery({
     queryKey: ['host-bookings'],
@@ -41,13 +44,13 @@ export default function ReservationsPage() {
 
   const approveMutation = useMutation({
     mutationFn: (id) => api.post(`/host/bookings/${id}/approve/`, {}),
-    onSuccess: () => { toast.success('Booking approved.'); qc.invalidateQueries({ queryKey: ['host-bookings'] }); },
-    onError: () => toast.error('Could not approve booking.'),
+    onSuccess: () => { toast.success(t('approvedToast')); qc.invalidateQueries({ queryKey: ['host-bookings'] }); },
+    onError: () => toast.error(t('errorApprove')),
   });
   const declineMutation = useMutation({
     mutationFn: (id) => api.post(`/host/bookings/${id}/decline/`, {}),
-    onSuccess: () => { toast.success('Booking declined.'); qc.invalidateQueries({ queryKey: ['host-bookings'] }); },
-    onError: () => toast.error('Could not decline booking.'),
+    onSuccess: () => { toast.success(t('declinedToast')); qc.invalidateQueries({ queryKey: ['host-bookings'] }); },
+    onError: () => toast.error(t('errorDecline')),
   });
 
   const filtered = useMemo(() => {
@@ -89,16 +92,11 @@ export default function ReservationsPage() {
 
       {/* Header */}
       <div>
-        <h1 className="font-display text-2xl sm:text-3xl font-medium text-ink">
-          Reservations{' '}
-          <span className="font-sans font-normal text-lg sm:text-xl text-ink-mute">预订管理</span>
-        </h1>
-        <p className="text-sm text-ink-mute mt-1">
-          {allBookings.length} booking{allBookings.length !== 1 ? 's' : ''} across your properties
-        </p>
+        <h1 className="font-display text-2xl sm:text-3xl font-medium text-ink">{t('title')}</h1>
+        <p className="text-sm text-ink-mute mt-1">{t('subtitle', { count: allBookings.length })}</p>
       </div>
 
-      {/* Filter tabs — horizontally scrollable on mobile */}
+      {/* Filter tabs */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div
           className="flex gap-1.5 overflow-x-auto pb-0.5"
@@ -127,7 +125,7 @@ export default function ReservationsPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-ink-mute pointer-events-none" />
           <input
             type="text"
-            placeholder="Search guest or villa…"
+            placeholder={t('searchPlaceholder')}
             value={search}
             onChange={(e) => changeSearch(e.target.value)}
             className="h-9 pl-9 pr-4 text-sm border border-rule rounded-lg bg-surface focus:outline-none focus:ring-1 focus:ring-jade w-60 placeholder:text-ink-mute/60"
@@ -137,10 +135,10 @@ export default function ReservationsPage() {
 
       {/* Count summary */}
       <p className="text-xs text-ink-mute -mt-3">
-        Showing {shown.length} of {total} reservation{total !== 1 ? 's' : ''}
+        {t('showing', { shown: shown.length, total })}
       </p>
 
-      {/* Mobile card list (< md) */}
+      {/* Mobile card list */}
       <div className="md:hidden space-y-3">
         {isPending && (
           <div className="space-y-3">
@@ -154,8 +152,8 @@ export default function ReservationsPage() {
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="py-16 text-center"
           >
-            <p className="text-sm font-medium text-ink mb-0.5">No reservations found</p>
-            <p className="text-xs text-ink-mute">Try adjusting your filter or search.</p>
+            <p className="text-sm font-medium text-ink mb-0.5">{t('empty.title')}</p>
+            <p className="text-xs text-ink-mute">{t('empty.desc')}</p>
           </motion.div>
         )}
         {shown.map((bk) => {
@@ -164,7 +162,7 @@ export default function ReservationsPage() {
           return (
             <div key={bk.id} className="bg-surface rounded-xl border border-rule shadow-sm p-4 flex flex-col gap-3">
               <div className="flex items-center gap-3">
-                <img src={bk.guestAvatarUrl || ''} alt={bk.guestName} className="size-10 rounded-full object-cover shrink-0" />
+                <Avatar src={bk.guestAvatarUrl} name={bk.guestName} size={40} />
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-ink text-sm truncate">{bk.guestName}</p>
                   <p className="text-xs text-ink-mute font-mono mt-0.5">{bk.reference}</p>
@@ -173,17 +171,17 @@ export default function ReservationsPage() {
               </div>
               <p className="text-xs text-ink-soft truncate">{bk.villa?.titleEn ?? '—'}</p>
               <div className="flex items-center justify-between text-xs text-ink-mute">
-                <span>{bk.checkIn} → {bk.checkOut} · {bk.nights} nights</span>
+                <span>{bk.checkIn} → {bk.checkOut} · {bk.nights}n</span>
                 <span className="font-mono font-semibold text-jade">Rp {(bk.payoutIdr ?? 0).toLocaleString('id-ID')}</span>
               </div>
               {needsApproval ? (
                 <div className="flex gap-2 pt-1">
-                  <button type="button" onClick={() => approveMutation.mutate(bk.id)} disabled={approveMutation.isPending} className="flex-1 py-2.5 rounded-lg bg-jade text-white text-xs font-semibold hover:bg-jade-deep disabled:opacity-50 transition-colors min-h-[44px]">Approve</button>
-                  <button type="button" onClick={() => declineMutation.mutate(bk.id)} disabled={declineMutation.isPending} className="flex-1 py-2.5 rounded-lg border border-rule text-danger text-xs font-semibold hover:border-danger disabled:opacity-50 transition-colors min-h-[44px]">Decline</button>
+                  <button type="button" onClick={() => approveMutation.mutate(bk.id)} disabled={approveMutation.isPending} className="flex-1 py-2.5 rounded-lg bg-jade text-white text-xs font-semibold hover:bg-jade-deep disabled:opacity-50 transition-colors min-h-[44px]">{t('approve')}</button>
+                  <button type="button" onClick={() => declineMutation.mutate(bk.id)} disabled={declineMutation.isPending} className="flex-1 py-2.5 rounded-lg border border-rule text-danger text-xs font-semibold hover:border-danger disabled:opacity-50 transition-colors min-h-[44px]">{t('decline')}</button>
                 </div>
               ) : (
                 <Link href={`/dashboard/reservations/${bk.id}`} className="w-full py-2.5 rounded-lg border border-rule text-xs font-semibold text-ink-soft hover:border-jade hover:text-jade transition-colors text-center min-h-[44px] flex items-center justify-center">
-                  View details
+                  {t('viewDetails')}
                 </Link>
               )}
             </div>
@@ -191,23 +189,32 @@ export default function ReservationsPage() {
         })}
       </div>
 
-      {/* Desktop table (md+) */}
+      {/* Desktop table */}
       <div className="hidden md:block bg-surface rounded-xl border border-rule shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="border-b border-rule bg-surface-alt/50">
-                {['Guest', 'Villa', 'Check-in', 'Check-out', 'Nights', 'Payout', 'Status', ''].map((h, i) => (
+                {[
+                  { key: 'guest',    label: t('table.guest') },
+                  { key: 'villa',    label: t('table.villa') },
+                  { key: 'checkIn',  label: t('table.checkIn') },
+                  { key: 'checkOut', label: t('table.checkOut') },
+                  { key: 'nights',   label: t('table.nights') },
+                  { key: 'payout',   label: t('table.payout') },
+                  { key: 'status',   label: t('table.status') },
+                  { key: 'actions',  label: '' },
+                ].map(({ key, label }) => (
                   <th
-                    key={h || i}
+                    key={key}
                     className={`px-4 py-3 text-xs font-semibold uppercase tracking-wide text-ink-mute whitespace-nowrap ${
-                      h === 'Nights'  ? 'text-center' :
-                      h === 'Payout'  ? 'text-right'  :
-                      h === ''        ? ''            :
+                      key === 'nights'  ? 'text-center' :
+                      key === 'payout'  ? 'text-right'  :
+                      key === 'actions' ? ''            :
                       'text-left'
                     }`}
                   >
-                    {h}
+                    {label}
                   </th>
                 ))}
               </tr>
@@ -231,8 +238,8 @@ export default function ReservationsPage() {
                       className="py-20 text-center"
                     >
                       <CalendarDays className="size-8 text-ink-mute/30 mx-auto mb-2" />
-                      <p className="text-sm font-medium text-ink mb-0.5">No reservations found</p>
-                      <p className="text-xs text-ink-mute">Try adjusting your filter or search.</p>
+                      <p className="text-sm font-medium text-ink mb-0.5">{t('empty.title')}</p>
+                      <p className="text-xs text-ink-mute">{t('empty.desc')}</p>
                     </motion.div>
                   </td>
                 </tr>
@@ -241,46 +248,32 @@ export default function ReservationsPage() {
                 const needsApproval = bk.status === 'pending_approval';
                 return (
                   <tr key={bk.id} className="border-b border-rule last:border-0 hover:bg-jade-soft/30 transition-colors duration-150">
-
-                    {/* Guest */}
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2.5">
-                        <img src={bk.guestAvatarUrl || ''} alt={bk.guestName} className="size-8 rounded-full object-cover shrink-0" />
+                        <Avatar src={bk.guestAvatarUrl} name={bk.guestName} size={32} />
                         <div className="min-w-0">
                           <p className="font-semibold text-ink text-sm leading-tight">{bk.guestName}</p>
                           <p className="text-[11px] text-ink-mute font-mono mt-0.5">{bk.reference}</p>
                         </div>
                       </div>
                     </td>
-
-                    {/* Villa */}
                     <td className="px-4 py-3 text-sm text-ink-soft max-w-[170px]">
                       <p className="truncate">{bk.villa?.titleEn ?? '—'}</p>
                     </td>
-
-                    {/* Dates */}
                     <td className="px-4 py-3 text-sm text-ink whitespace-nowrap">{bk.checkIn}</td>
                     <td className="px-4 py-3 text-sm text-ink whitespace-nowrap">{bk.checkOut}</td>
-
-                    {/* Nights */}
                     <td className="px-4 py-3 text-sm text-ink text-center">{bk.nights}</td>
-
-                    {/* Payout */}
                     <td className="px-4 py-3 text-right">
                       <p className="font-mono text-sm font-semibold text-ink">
                         Rp {(bk.payoutIdr ?? 0).toLocaleString('id-ID')}
                       </p>
                       <p className="font-mono text-[11px] text-mist mt-0.5">≈ ¥{(bk.totalCny ?? 0).toLocaleString()}</p>
                     </td>
-
-                    {/* Status */}
                     <td className="px-4 py-3">
                       <span className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ${cls}`}>
                         {label}
                       </span>
                     </td>
-
-                    {/* Action */}
                     <td className="px-4 py-3">
                       {needsApproval ? (
                         <div className="flex gap-1.5">
@@ -290,7 +283,7 @@ export default function ReservationsPage() {
                             disabled={approveMutation.isPending}
                             className="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-jade text-white hover:bg-jade-deep disabled:opacity-50 transition-colors"
                           >
-                            Approve
+                            {t('approve')}
                           </button>
                           <button
                             type="button"
@@ -298,7 +291,7 @@ export default function ReservationsPage() {
                             disabled={declineMutation.isPending}
                             className="text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-rule text-danger hover:border-danger disabled:opacity-50 transition-colors"
                           >
-                            Decline
+                            {t('decline')}
                           </button>
                         </div>
                       ) : (
@@ -306,7 +299,7 @@ export default function ReservationsPage() {
                           href={`/dashboard/reservations/${bk.id}`}
                           className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-rule text-ink-soft hover:border-jade hover:text-jade transition-colors whitespace-nowrap"
                         >
-                          View
+                          {t('view')}
                         </Link>
                       )}
                     </td>
@@ -320,7 +313,7 @@ export default function ReservationsPage() {
         {/* Pagination */}
         {pageCount > 1 && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-rule bg-surface-alt/30">
-            <p className="text-xs text-ink-mute">Page {page} of {pageCount}</p>
+            <p className="text-xs text-ink-mute">{t('pagination.page', { page, total: pageCount })}</p>
             <div className="flex items-center gap-1">
               <button
                 type="button"

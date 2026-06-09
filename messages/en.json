@@ -1,0 +1,561 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "listings": "Listings",
+    "calendar": "Calendar",
+    "reservations": "Reservations",
+    "messages": "Messages",
+    "insights": "Insights",
+    "payouts": "Payouts",
+    "profile": "Profile",
+    "forHosts": "for Hosts",
+    "previewPublicSite": "Preview public site",
+    "logOut": "Log out",
+    "signingOut": "Signing out…",
+    "hostSince": "Host since {year}"
+  },
+  "common": {
+    "save": "Save changes",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "approve": "Approve",
+    "decline": "Decline",
+    "view": "View",
+    "edit": "Edit",
+    "delete": "Delete",
+    "viewAll": "View all",
+    "nights": "{count, plural, one {# night} other {# nights}}",
+    "guests": "{count, plural, one {# guest} other {# guests}}"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Log in to your host account",
+      "email": "Email address",
+      "password": "Password",
+      "forgotPassword": "Forgot password?",
+      "submit": "Log in",
+      "submitting": "Logging in…",
+      "wechat": "Continue with WeChat",
+      "noAccount": "Don't have a host account?",
+      "signUp": "Sign up",
+      "guestLink": "Are you a guest?",
+      "visitBaliVilla": "Visit BaliVilla",
+      "error": {
+        "invalidCredentials": "Invalid email or password",
+        "notAHost": "This account is not registered as a host. Sign up as a host first",
+        "failed": "Login failed. Please try again.",
+        "emailNotVerified": "Please verify your email before logging in."
+      },
+      "resendVerification": "Resend verification email",
+      "resendSent": "Verification email sent — check your inbox."
+    },
+    "signup": {
+      "title": "Become a host",
+      "subtitle": "Create your free host account",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email address",
+      "phone": "Phone number (optional)",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "submit": "Create account",
+      "submitting": "Creating account…",
+      "hasAccount": "Already a host?",
+      "logIn": "Log in",
+      "success": {
+        "title": "Check your email",
+        "desc": "We've sent a verification link to {email}",
+        "loginNow": "Log in now",
+        "resend": "Resend email"
+      }
+    },
+    "forgotPassword": {
+      "title": "Reset your password",
+      "subtitle": "Enter your email and we'll send you a reset link.",
+      "email": "Email address",
+      "emailPlaceholder": "you@example.com",
+      "submit": "Send reset link",
+      "submitting": "Sending…",
+      "success": {
+        "sent": "Reset link sent to {email}",
+        "tryAgain": "Try again"
+      },
+      "backToLogin": "Back to login"
+    },
+    "verifyEmail": {
+      "loading": "Verifying your email…",
+      "success": {
+        "title": "Email verified!",
+        "desc": "Your host account is ready. Log in to get started.",
+        "login": "Log in to host dashboard"
+      },
+      "error": {
+        "title": "Verification failed"
+      },
+      "backToLogin": "Back to log in"
+    }
+  },
+  "dashboard": {
+    "greeting": {
+      "welcome": "Welcome back.",
+      "firstVilla": "Welcome, {name}. Let's get your first villa listed.",
+      "checkIns": "Welcome back, {name}. You have {count, plural, one {# check-in} other {# check-ins}} this week.",
+      "fillDates": "Welcome back, {name}. Ready to fill more dates?"
+    },
+    "viewListings": "View my listings",
+    "todayCheckIns": "Today's check-ins",
+    "todayCheckOuts": "Today's check-outs",
+    "noneToday": "None today",
+    "guestsCount": "{count, plural, one {# guest} other {# guests}}",
+    "actionItems": "Action items",
+    "actionItemsDesc": "Tasks that need your attention",
+    "allCaughtUp": "All caught up!",
+    "recentBookings": "Recent bookings",
+    "noBookingsYet": "No bookings yet",
+    "metric": {
+      "bookingsThisMonth": "Bookings this month",
+      "payoutThisMonth": "Payout this month",
+      "avgRating": "Average rating",
+      "totalBookings": "Total bookings",
+      "fromBookings": "from {count} bookings"
+    },
+    "alert": {
+      "pendingBookings": "{count, plural, one {# booking needs} other {# bookings need}} approval",
+      "unreadMessages": "{count, plural, one {# unread message} other {# unread messages}}",
+      "review": "Review",
+      "reply": "Reply",
+      "updateCalendar": "Update calendar availability"
+    },
+    "status": {
+      "confirmed": "confirmed",
+      "inHouse": "in house",
+      "pendingApproval": "pending approval",
+      "completed": "completed",
+      "cancelled": "cancelled",
+      "draft": "draft"
+    }
+  },
+  "listings": {
+    "title": "Your listings",
+    "subtitle": "{count, plural, one {# property} other {# properties}} on BaliVilla",
+    "addListing": "Add another listing",
+    "filters": {
+      "all": "All",
+      "published": "Published",
+      "pendingReview": "Pending Review",
+      "paused": "Paused",
+      "draft": "Draft"
+    },
+    "empty": {
+      "title": "You have no listings yet",
+      "desc": "List your first villa and start welcoming Chinese guests in under 30 minutes.",
+      "cta": "Create your first listing"
+    },
+    "noResults": {
+      "title": "No {filter} listings",
+      "desc": "Adjust your filter or add a new listing."
+    },
+    "card": {
+      "bookings": "{count} bookings",
+      "occupancy": "{pct}% occ.",
+      "settings": "Settings",
+      "pause": "Pause listing",
+      "unpause": "Unpause listing",
+      "previewAsGuest": "Preview as guest",
+      "duplicate": "Duplicate",
+      "deleteListing": "Delete listing"
+    }
+  },
+  "listingSettings": {
+    "title": "Listing settings",
+    "subtitle": "Pricing, rules, and availability settings",
+    "pricing": {
+      "title": "Pricing",
+      "nightlyPrice": "Nightly price (IDR)",
+      "cleaningFee": "Cleaning fee (optional)",
+      "weekendPremium": "Weekend premium",
+      "weekendPremiumHint": "Applied on Friday and Saturday nights",
+      "noPremium": "No premium",
+      "premium50": "+50%",
+      "priceRequired": "Nightly price is required"
+    },
+    "stayLength": {
+      "title": "Stay length",
+      "minNights": "Minimum nights",
+      "maxNights": "Maximum nights"
+    },
+    "cancellation": {
+      "title": "Cancellation policy",
+      "flexible": "Flexible",
+      "flexibleDesc": "Full refund up to 24 h before check-in",
+      "moderate": "Moderate",
+      "moderateDesc": "Full refund 5+ days before; 50% within 5 days",
+      "strict": "Strict",
+      "strictDesc": "Full refund within 48 h of booking if 14+ days away"
+    },
+    "houseRules": {
+      "title": "House rules",
+      "no_smoking": "No smoking",
+      "no_parties": "No parties or events",
+      "no_pets": "No pets",
+      "children_ok": "Children welcome",
+      "quiet_hours": "Quiet hours after 10 pm",
+      "register_guests": "All guests must be registered"
+    },
+    "instantBook": {
+      "title": "Instant Book",
+      "desc": "When on, guests can book without your approval. When off, you review each request first."
+    },
+    "save": "Save changes",
+    "saving": "Saving…"
+  },
+  "reservations": {
+    "title": "Reservations",
+    "subtitle": "{count, plural, one {# booking} other {# bookings}} across your properties",
+    "searchPlaceholder": "Search guest or villa…",
+    "showing": "Showing {shown} of {total, plural, one {# reservation} other {# reservations}}",
+    "tabs": {
+      "all": "All",
+      "pending": "Pending",
+      "upcoming": "Upcoming",
+      "inHouse": "In-house",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "status": {
+      "confirmed": "Confirmed",
+      "inHouse": "In-house",
+      "completed": "Completed",
+      "pendingApproval": "Pending",
+      "cancelled": "Cancelled"
+    },
+    "table": {
+      "guest": "Guest",
+      "villa": "Villa",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "nights": "Nights",
+      "payout": "Payout",
+      "status": "Status"
+    },
+    "approve": "Approve",
+    "decline": "Decline",
+    "view": "View",
+    "viewDetails": "View details",
+    "empty": {
+      "title": "No reservations found",
+      "desc": "Try adjusting your filter or search."
+    },
+    "pagination": {
+      "page": "Page {page} of {total}"
+    },
+    "approvedToast": "Booking approved.",
+    "declinedToast": "Booking declined.",
+    "errorApprove": "Could not approve booking.",
+    "errorDecline": "Could not decline booking."
+  },
+  "reservationDetail": {
+    "title": "Reservation",
+    "back": "Back",
+    "notFound": "Reservation not found",
+    "backToReservations": "← Back to reservations",
+    "approving": "Approving…",
+    "declining": "Declining…",
+    "actionsTitle": "Actions",
+    "bookingTimeline": "Booking timeline",
+    "yourPayout": "Your payout",
+    "nightlyRateLine": "Nightly rate × {nights} nights",
+    "cleaningFee": "Cleaning fee",
+    "serviceFee": "Service fee",
+    "totalIdr": "Total (IDR)",
+    "guestPaidCny": "Guest paid (CNY)",
+    "commission": "BaliVilla commission (14%)",
+    "status": {
+      "confirmed": "Confirmed",
+      "inHouse": "In-house",
+      "completed": "Completed",
+      "pendingApproval": "Pending approval",
+      "pendingPayment": "Pending payment",
+      "cancelled": "Cancelled"
+    },
+    "timeline": {
+      "bookingCreated": "Booking created",
+      "paymentConfirmed": "Payment confirmed",
+      "checkInDue": "Check-in due",
+      "checkedIn": "Checked in",
+      "checkedOut": "Checked out",
+      "reviewReceived": "Review received",
+      "payoutSent": "Payout sent"
+    },
+    "guest": "Guest",
+    "stayDetails": "Stay details",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "nights": "Nights",
+    "guests": "Guests",
+    "paymentBreakdown": "Payment breakdown",
+    "specialRequests": "Special requests",
+    "actions": {
+      "approveBooking": "Approve booking",
+      "declineBooking": "Decline booking",
+      "markCheckIn": "Mark check-in",
+      "messageGuest": "Message guest",
+      "cancelBooking": "Cancel booking",
+      "markCheckOut": "Mark check-out",
+      "reportIssue": "Report issue",
+      "viewReview": "View review"
+    },
+    "toast": {
+      "markCheckIn": "Check-in marked",
+      "cancel": "Booking cancelled",
+      "markCheckOut": "Check-out marked — great stay!",
+      "reportIssue": "Support team notified",
+      "viewReview": "Review feature coming soon",
+      "approved": "Booking approved",
+      "declined": "Booking declined"
+    }
+  },
+  "messages": {
+    "title": "Messages",
+    "searchPlaceholder": "Search…",
+    "noConversations": "No conversations found.",
+    "selectConversation": "Select a conversation",
+    "quickReplies": "Quick replies",
+    "messagePlaceholder": "Type a message… (Enter to send, Shift+Enter for new line)",
+    "failedToSend": "Failed to send message.",
+    "attachmentSoon": "File attachment coming soon",
+    "feedbackGood": "Thanks for your feedback!",
+    "feedbackBad": "Flagged for review — we'll improve this translation",
+    "quickReply": {
+      "checkIn": "Check-in instructions",
+      "directions": "Directions from airport",
+      "wifi": "Wifi password",
+      "houseRules": "House rules reminder"
+    }
+  },
+  "calendar": {
+    "title": "Availability & Pricing",
+    "subtitle": "Click a date to set price or block it. Drag to select a range.",
+    "allVillas": "All villas ({count})",
+    "today": "Today",
+    "legend": {
+      "booked": "Booked",
+      "pending": "Pending approval",
+      "blocked": "Blocked",
+      "available": "Available",
+      "selected": "Selected"
+    },
+    "panel": {
+      "bookingDetails": "Booking details",
+      "pendingApproval": "Pending approval",
+      "daysSelected": "{count, plural, one {# day selected} other {# days selected}}",
+      "dateDetails": "Date details",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "totalCharged": "Total charged",
+      "yourPayout": "Your payout",
+      "pricePerNight": "Price per night (IDR)",
+      "save": "Save",
+      "blockDate": "Block this date",
+      "blockDates": "Block these dates"
+    },
+    "showing": "Showing {count, plural, one {# property} other {# properties}} · {days} days",
+    "seasonalRules": {
+      "title": "Seasonal pricing rules",
+      "desc": "Markups applied automatically across all {count} properties during peak periods",
+      "addRule": "Add rule",
+      "noRules": "No rules yet.",
+      "ruleEditorSoon": "Rule editor coming soon"
+    },
+    "toast": {
+      "approved": "Booking approved.",
+      "declined": "Booking declined.",
+      "errorApprove": "Could not approve booking.",
+      "errorDecline": "Could not decline booking.",
+      "priceSaved": "Price saved: Rp {price} / night",
+      "datesBlocked": "Dates blocked",
+      "ruleRemoved": "Rule removed"
+    }
+  },
+  "insights": {
+    "title": "Insights",
+    "subtitle": "Performance across your {count} properties",
+    "sampleData": "Sample data — live analytics coming soon",
+    "charts": {
+      "revenue": "Revenue trend",
+      "revenueSubtitle": "Monthly gross revenue (IDR)",
+      "occupancy": "Occupancy rate",
+      "occupancySubtitle": "Average across all {count} properties (%)",
+      "bookingSources": "Booking sources",
+      "bookingSourcesSubtitle": "How guests found your properties",
+      "adr": "Average daily rate",
+      "adrSubtitle": "Per-night revenue per occupied night (IDR)",
+      "reviewScore": "Review score trend",
+      "reviewScoreSubtitle": "Average guest rating across properties (out of 5.0)"
+    },
+    "topProperties": "Top performing properties",
+    "table": {
+      "villa": "Villa",
+      "bookings": "Bookings",
+      "revenue": "Revenue",
+      "avgRating": "Avg rating",
+      "occupancy": "Occupancy"
+    },
+    "timeRanges": {
+      "last30": "Last 30 days",
+      "last90": "Last 90 days",
+      "lastYear": "Last year",
+      "allTime": "All time"
+    }
+  },
+  "payouts": {
+    "title": "Payouts",
+    "subtitle": "Earnings from your {count} properties — paid to {account}",
+    "balance": {
+      "available": "Available balance",
+      "pending": "Pending balance",
+      "upcoming": "Upcoming earnings",
+      "readyToWithdraw": "Ready to withdraw",
+      "bookingsOnHold": "Bookings still in 24h hold",
+      "fromFutureBookings": "From confirmed future bookings"
+    },
+    "withdrawNow": "Withdraw now",
+    "airwallexNote": "Payouts are processed via Airwallex and settled to your registered Indonesian bank account in IDR within 24 hours of guest checkout. Live withdrawals will be enabled once payment processing is fully configured.",
+    "payoutHistory": "Payout history",
+    "payoutsOnRecord": "{count} payouts on record",
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "failed": "Failed"
+    },
+    "bankingInfo": "Banking information",
+    "bankingInfoDesc": "Where your payouts are sent",
+    "editBankingInfo": "Edit banking info",
+    "bankFields": {
+      "bankName": "Bank name",
+      "accountHolder": "Account holder",
+      "accountNumber": "Account number",
+      "swift": "SWIFT / BIC",
+      "currency": "Payout currency",
+      "schedule": "Payout schedule"
+    },
+    "modal": {
+      "title": "Withdraw funds",
+      "available": "Available: {amount}",
+      "amountLabel": "Withdrawal amount (IDR)",
+      "destination": "Destination",
+      "estimatedArrival": "Estimated arrival",
+      "minimumWithdrawal": "Minimum withdrawal",
+      "cancel": "Cancel",
+      "confirm": "Confirm withdrawal"
+    },
+    "table": {
+      "date": "Date",
+      "amount": "Amount",
+      "method": "Method",
+      "status": "Status",
+      "reference": "Reference"
+    },
+    "receipt": "Receipt",
+    "toast": {
+      "initiated": "Withdrawal of {amount} initiated — arrives in 1–3 business days",
+      "errorMin": "Minimum withdrawal is {amount}",
+      "errorExceeds": "Amount exceeds available balance",
+      "receiptSoon": "Receipt download coming soon",
+      "bankEditNote": "Re-verification required — check your email to continue"
+    }
+  },
+  "profile": {
+    "yourProfile": "Your profile",
+    "hostingSince": "Hosting since {year} · {rate}% response rate",
+    "tabs": {
+      "personalInfo": "Personal info",
+      "hostingPrefs": "Hosting preferences",
+      "notifications": "Notifications",
+      "security": "Security"
+    },
+    "personal": {
+      "profilePhoto": "Profile photo",
+      "uploadPhoto": "Upload a new photo",
+      "photoHint": "JPG or PNG · Max 4 MB · Minimum 400×400 px",
+      "chooseFile": "Choose file",
+      "displayName": "Display name",
+      "visibleToGuests": "(visible to guests)",
+      "bio": "Bio",
+      "charCount": "{count} / 500 characters",
+      "languagesSpoken": "Languages spoken",
+      "email": "Email",
+      "readOnly": "(read-only)",
+      "phone": "Phone number",
+      "savedToast": "Profile updated"
+    },
+    "prefs": {
+      "autoReply": "Auto-reply for new inquiries",
+      "autoReplyDesc": "Guests receive this message instantly when they make an enquiry",
+      "responseTimeGoal": "Response time goal",
+      "responseTimeHint": "Shown on your listings — faster response rates improve search ranking",
+      "available": "Available for new bookings",
+      "acceptingDesc": "Your listings are accepting new reservations",
+      "fullyBookedDesc": "All your listings appear fully booked to guests",
+      "savedToast": "Preferences saved",
+      "options": {
+        "1h": "Within 1 hour",
+        "12h": "Within 12 hours",
+        "24h": "Within 24 hours",
+        "48h": "Within 48 hours"
+      }
+    },
+    "notif": {
+      "header": "Choose how you want to be notified for each event type.",
+      "email": "Email",
+      "sms": "SMS",
+      "inapp": "In-app",
+      "savedToast": "Notification preferences saved",
+      "events": {
+        "new_booking": "New booking confirmed",
+        "booking_request": "Booking request received",
+        "new_message": "New guest message",
+        "review_received": "Guest review posted",
+        "payout_sent": "Payout initiated",
+        "price_suggestion": "Smart pricing suggestion",
+        "security_alert": "Account security alert"
+      }
+    },
+    "security": {
+      "changePassword": "Change password",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmNew": "Confirm new",
+      "updatePassword": "Update password",
+      "passwordUpdatedToast": "Password updated",
+      "twoFA": "Two-factor authentication",
+      "twoFAEnabled": "Your account is protected with 2FA via authenticator app",
+      "twoFADisabled": "Add an extra layer of security to your account",
+      "twoFAEnabledToast": "2FA enabled",
+      "twoFADisabledToast": "2FA disabled",
+      "activeSessions": "Active sessions",
+      "current": "Current",
+      "signOut": "Sign out",
+      "sessionSignedOutToast": "Session signed out",
+      "dangerZone": "Danger zone",
+      "dangerZoneDesc": "Permanently delete your host account and all listings. This cannot be undone.",
+      "deleteAccount": "Delete account",
+      "modal": {
+        "title": "Delete account",
+        "desc": "This will permanently delete your account and all your listings. Type DELETE to confirm.",
+        "placeholder": "Type DELETE",
+        "cancel": "Cancel",
+        "deletePermanently": "Delete permanently",
+        "typeError": "Type DELETE to confirm",
+        "submittedToast": "Account deletion request submitted — you will receive a confirmation email"
+      }
+    }
+  },
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "zh": "中文",
+    "id": "Indonesian"
+  }
+}

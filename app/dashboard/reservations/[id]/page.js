@@ -5,26 +5,9 @@ import Link from 'next/link';
 import { ArrowLeft, CheckCircle2, Circle, Dot, MessageSquare, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import { api } from '@/lib/api-client';
-
-const STATUS_META = {
-  confirmed:        { label: 'Confirmed',        cls: 'bg-jade/10 text-jade' },
-  in_house:         { label: 'In-house',          cls: 'bg-success/10 text-success' },
-  completed:        { label: 'Completed',         cls: 'bg-mist/20 text-mist-deep' },
-  pending_approval: { label: 'Pending approval',  cls: 'bg-warn/10 text-warn' },
-  pending_payment:  { label: 'Pending payment',   cls: 'bg-warn/10 text-warn' },
-  cancelled:        { label: 'Cancelled',         cls: 'bg-danger/10 text-danger' },
-};
-
-const TIMELINE_STEPS = [
-  'Booking created',
-  'Payment confirmed',
-  'Check-in due',
-  'Checked in',
-  'Checked out',
-  'Review received',
-  'Payout sent',
-];
+import Avatar from '@/components/ui/Avatar';
 
 function timelineProgress(status) {
   if (status === 'pending_approval') return 0;
@@ -37,8 +20,29 @@ function timelineProgress(status) {
 function fmtIdr(n) { return `Rp ${Number(n).toLocaleString('id-ID')}`; }
 
 export default function ReservationDetailPage() {
+  const t = useTranslations('reservationDetail');
+  const tCommon = useTranslations('common');
   const { id } = useParams();
   const qc = useQueryClient();
+
+  const STATUS_META = {
+    confirmed:        { label: t('status.confirmed'),       cls: 'bg-jade/10 text-jade' },
+    in_house:         { label: t('status.inHouse'),         cls: 'bg-success/10 text-success' },
+    completed:        { label: t('status.completed'),       cls: 'bg-mist/20 text-mist-deep' },
+    pending_approval: { label: t('status.pendingApproval'), cls: 'bg-warn/10 text-warn' },
+    pending_payment:  { label: t('status.pendingPayment'),  cls: 'bg-warn/10 text-warn' },
+    cancelled:        { label: t('status.cancelled'),       cls: 'bg-danger/10 text-danger' },
+  };
+
+  const TIMELINE_STEPS = [
+    t('timeline.bookingCreated'),
+    t('timeline.paymentConfirmed'),
+    t('timeline.checkInDue'),
+    t('timeline.checkedIn'),
+    t('timeline.checkedOut'),
+    t('timeline.reviewReceived'),
+    t('timeline.payoutSent'),
+  ];
 
   const { data, isPending } = useQuery({
     queryKey: ['host-booking', id],
@@ -49,7 +53,7 @@ export default function ReservationDetailPage() {
   const approveMutation = useMutation({
     mutationFn: () => api.post(`/host/bookings/${id}/approve/`, {}),
     onSuccess: () => {
-      toast.success(`Booking ${bk?.reference ?? id} approved`);
+      toast.success(t('toast.approved'));
       qc.invalidateQueries({ queryKey: ['host-booking', id] });
       qc.invalidateQueries({ queryKey: ['host-bookings'] });
     },
@@ -59,7 +63,7 @@ export default function ReservationDetailPage() {
   const declineMutation = useMutation({
     mutationFn: () => api.post(`/host/bookings/${id}/decline/`, {}),
     onSuccess: () => {
-      toast.error(`Booking ${bk?.reference ?? id} declined`);
+      toast.success(t('toast.declined'));
       qc.invalidateQueries({ queryKey: ['host-booking', id] });
       qc.invalidateQueries({ queryKey: ['host-bookings'] });
     },
@@ -78,9 +82,9 @@ export default function ReservationDetailPage() {
   if (!bk) {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-4">
-        <p className="text-lg font-medium text-ink">Reservation not found</p>
+        <p className="text-lg font-medium text-ink">{t('notFound')}</p>
         <Link href="/dashboard/reservations" className="text-sm text-jade hover:text-jade-deep font-medium transition-colors">
-          ← Back to reservations
+          {t('backToReservations')}
         </Link>
       </div>
     );
@@ -104,11 +108,8 @@ export default function ReservationDetailPage() {
       {/* Header */}
       <div className="flex flex-wrap items-center gap-4 justify-between">
         <div className="flex items-center gap-3">
-          <Link
-            href="/dashboard/reservations"
-            className="inline-flex items-center gap-1.5 text-sm text-ink-mute hover:text-ink transition-colors"
-          >
-            <ArrowLeft className="size-4" /> Back
+          <Link href="/dashboard/reservations" className="inline-flex items-center gap-1.5 text-sm text-ink-mute hover:text-ink transition-colors">
+            <ArrowLeft className="size-4" /> {t('back')}
           </Link>
           <span className="text-ink-mute">/</span>
           <span className="font-mono text-sm font-semibold text-ink">{ref}</span>
@@ -119,20 +120,14 @@ export default function ReservationDetailPage() {
       {/* Two-column layout */}
       <div className="flex flex-col lg:flex-row gap-6 items-start">
 
-        {/* ── LEFT COLUMN ── */}
+        {/* LEFT COLUMN */}
         <div className="flex-1 min-w-0 flex flex-col gap-5">
 
           {/* Guest info */}
           <div className="bg-surface rounded-xl border border-rule shadow-sm p-5 flex flex-col gap-4">
-            <h2 className="text-sm font-semibold text-ink">Guest</h2>
+            <h2 className="text-sm font-semibold text-ink">{t('guest')}</h2>
             <div className="flex items-center gap-3">
-              {bk.guestAvatarUrl ? (
-                <img src={bk.guestAvatarUrl} alt={bk.guestName} className="size-12 rounded-full object-cover shrink-0" />
-              ) : (
-                <div className="size-12 rounded-full bg-jade-soft flex items-center justify-center text-jade font-semibold shrink-0">
-                  {(bk.guestName || '?')[0].toUpperCase()}
-                </div>
-              )}
+              <Avatar src={bk.guestAvatarUrl} name={bk.guestName} size={48} />
               <div className="flex-1 min-w-0">
                 <p className="text-lg font-semibold text-ink">{bk.guestName}</p>
                 <div className="flex flex-wrap gap-3 mt-1 text-xs text-ink-mute">
@@ -140,17 +135,14 @@ export default function ReservationDetailPage() {
                   {bk.guestPhone && <><span>·</span><span>{bk.guestPhone}</span></>}
                 </div>
               </div>
-              <Link
-                href="/dashboard/messages"
-                className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-rule text-xs font-semibold text-ink-soft hover:border-jade hover:text-jade transition-colors"
-              >
+              <Link href="/dashboard/messages" className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-rule text-xs font-semibold text-ink-soft hover:border-jade hover:text-jade transition-colors">
                 <MessageSquare className="size-3.5" />
-                Message
+                {t('actions.messageGuest')}
               </Link>
             </div>
             {bk.guestNote && (
               <div className="bg-warn/5 border border-warn/20 rounded-lg px-3 py-2.5 text-xs text-ink-soft leading-relaxed">
-                <span className="font-semibold text-warn block mb-0.5">Special requests</span>
+                <span className="font-semibold text-warn block mb-0.5">{t('specialRequests')}</span>
                 {bk.guestNote}
               </div>
             )}
@@ -158,7 +150,7 @@ export default function ReservationDetailPage() {
 
           {/* Stay details */}
           <div className="bg-surface rounded-xl border border-rule shadow-sm p-5 flex flex-col gap-4">
-            <h2 className="text-sm font-semibold text-ink">Stay details</h2>
+            <h2 className="text-sm font-semibold text-ink">{t('stayDetails')}</h2>
             {villa && (
               <div className="flex items-center gap-3 pb-3 border-b border-rule">
                 <img src={villa.photos?.[0] ?? ''} alt={villa.titleEn} className="size-12 rounded-lg object-cover shrink-0" />
@@ -170,10 +162,10 @@ export default function ReservationDetailPage() {
             )}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
-                { label: 'Check-in',  value: bk.checkIn  },
-                { label: 'Check-out', value: bk.checkOut },
-                { label: 'Nights',    value: `${bk.nights} nights` },
-                { label: 'Guests',    value: `${bk.adults} adults${bk.children ? `, ${bk.children} children` : ''}` },
+                { label: t('checkIn'),  value: bk.checkIn  },
+                { label: t('checkOut'), value: bk.checkOut },
+                { label: t('nights'),   value: tCommon('nights', { count: bk.nights }) },
+                { label: t('guests'),   value: `${bk.adults} adults${bk.children ? `, ${bk.children} children` : ''}` },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-surface-alt rounded-lg p-3">
                   <p className="text-[10px] font-semibold uppercase tracking-wide text-ink-mute">{label}</p>
@@ -185,12 +177,12 @@ export default function ReservationDetailPage() {
 
           {/* Payment breakdown */}
           <div className="bg-surface rounded-xl border border-rule shadow-sm p-5 flex flex-col gap-3">
-            <h2 className="text-sm font-semibold text-ink">Payment breakdown</h2>
+            <h2 className="text-sm font-semibold text-ink">{t('paymentBreakdown')}</h2>
             <div className="flex flex-col gap-2 text-sm">
               {[
-                { label: `Nightly rate × ${bk.nights} nights`, value: fmtIdr(nightsTotal) },
-                { label: 'Cleaning fee',  value: fmtIdr(cleaningFee) },
-                { label: 'Service fee',   value: fmtIdr(serviceFee) },
+                { label: t('nightlyRateLine', { nights: bk.nights }), value: fmtIdr(nightsTotal) },
+                { label: t('cleaningFee'),  value: fmtIdr(cleaningFee) },
+                { label: t('serviceFee'),   value: fmtIdr(serviceFee) },
               ].map(({ label, value }) => (
                 <div key={label} className="flex justify-between">
                   <span className="text-ink-mute">{label}</span>
@@ -199,13 +191,13 @@ export default function ReservationDetailPage() {
               ))}
 
               <div className="border-t border-rule pt-2 mt-1 flex justify-between font-semibold">
-                <span className="text-ink">Total (IDR)</span>
+                <span className="text-ink">{t('totalIdr')}</span>
                 <span className="font-mono text-ink">{fmtIdr(bk.totalIdr)}</span>
               </div>
 
               {bk.totalCny > 0 && (
                 <div className="bg-jade-soft rounded-lg px-3 py-2 flex justify-between text-xs">
-                  <span className="text-jade font-medium">Guest paid (CNY)</span>
+                  <span className="text-jade font-medium">{t('guestPaidCny')}</span>
                   <span className="font-mono font-semibold text-jade">
                     ¥{bk.totalCny.toLocaleString()} <span className="font-normal text-jade/70">at {fxRate} IDR/¥</span>
                   </span>
@@ -213,12 +205,12 @@ export default function ReservationDetailPage() {
               )}
 
               <div className="flex justify-between text-danger/90">
-                <span>BaliVilla commission (14%)</span>
+                <span>{t('commission')}</span>
                 <span className="font-mono">− {fmtIdr(commission)}</span>
               </div>
 
               <div className="border-t border-rule pt-2 mt-1 flex justify-between items-baseline">
-                <span className="text-sm font-semibold text-ink">Your payout</span>
+                <span className="text-sm font-semibold text-ink">{t('yourPayout')}</span>
                 <span className="font-mono text-xl font-bold text-jade">{fmtIdr(bk.payoutIdr)}</span>
               </div>
             </div>
@@ -226,7 +218,7 @@ export default function ReservationDetailPage() {
 
           {/* Booking timeline */}
           <div className="bg-surface rounded-xl border border-rule shadow-sm p-5">
-            <h2 className="text-sm font-semibold text-ink mb-4">Booking timeline</h2>
+            <h2 className="text-sm font-semibold text-ink mb-4">{t('bookingTimeline')}</h2>
             <div className="flex flex-col gap-0">
               {TIMELINE_STEPS.map((label, i) => {
                 const done    = i < step;
@@ -267,10 +259,10 @@ export default function ReservationDetailPage() {
           </div>
         </div>
 
-        {/* ── RIGHT COLUMN — sticky action panel ── */}
+        {/* RIGHT COLUMN — sticky action panel */}
         <div className="lg:w-72 shrink-0 w-full lg:sticky lg:top-6">
           <div className="bg-surface rounded-xl border border-rule shadow-sm p-5 flex flex-col gap-3">
-            <h2 className="text-sm font-semibold text-ink">Actions</h2>
+            <h2 className="text-sm font-semibold text-ink">{t('actionsTitle')}</h2>
             <p className="text-xs text-ink-mute -mt-1">{ref} · {bk.nights} nights</p>
 
             {bk.status === 'pending_approval' && (
@@ -281,7 +273,7 @@ export default function ReservationDetailPage() {
                   disabled={approveMutation.isPending}
                   className="w-full h-10 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep disabled:opacity-50 transition-colors"
                 >
-                  {approveMutation.isPending ? 'Approving…' : 'Approve booking'}
+                  {approveMutation.isPending ? t('approving') : t('actions.approveBooking')}
                 </button>
                 <button
                   type="button"
@@ -289,82 +281,53 @@ export default function ReservationDetailPage() {
                   disabled={declineMutation.isPending}
                   className="w-full h-10 rounded-xl border border-danger/30 text-danger text-sm font-semibold hover:bg-danger/5 disabled:opacity-50 transition-colors"
                 >
-                  {declineMutation.isPending ? 'Declining…' : 'Decline booking'}
+                  {declineMutation.isPending ? t('declining') : t('actions.declineBooking')}
                 </button>
               </>
             )}
 
             {bk.status === 'confirmed' && (
               <>
-                <button
-                  type="button"
-                  onClick={() => toast.success('Check-in marked')}
-                  className="w-full h-10 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep transition-colors"
-                >
-                  Mark check-in
+                <button type="button" onClick={() => toast.success(t('toast.markCheckIn'))} className="w-full h-10 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep transition-colors">
+                  {t('actions.markCheckIn')}
                 </button>
-                <Link
-                  href="/dashboard/messages"
-                  className="w-full h-10 rounded-xl border border-rule text-sm font-semibold text-ink-soft hover:border-jade hover:text-jade transition-colors flex items-center justify-center gap-2"
-                >
-                  <MessageSquare className="size-4" /> Message guest
+                <Link href="/dashboard/messages" className="w-full h-10 rounded-xl border border-rule text-sm font-semibold text-ink-soft hover:border-jade hover:text-jade transition-colors flex items-center justify-center gap-2">
+                  <MessageSquare className="size-4" /> {t('actions.messageGuest')}
                 </Link>
-                <button
-                  type="button"
-                  onClick={() => toast.error('Booking cancelled')}
-                  className="w-full h-10 rounded-xl border border-danger/20 text-danger text-sm font-semibold hover:bg-danger/5 transition-colors"
-                >
-                  Cancel booking
+                <button type="button" onClick={() => toast.error(t('toast.cancel'))} className="w-full h-10 rounded-xl border border-danger/20 text-danger text-sm font-semibold hover:bg-danger/5 transition-colors">
+                  {t('actions.cancelBooking')}
                 </button>
               </>
             )}
 
             {bk.status === 'in_house' && (
               <>
-                <button
-                  type="button"
-                  onClick={() => toast.success('Check-out marked — great stay!')}
-                  className="w-full h-10 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep transition-colors"
-                >
-                  Mark check-out
+                <button type="button" onClick={() => toast.success(t('toast.markCheckOut'))} className="w-full h-10 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep transition-colors">
+                  {t('actions.markCheckOut')}
                 </button>
-                <Link
-                  href="/dashboard/messages"
-                  className="w-full h-10 rounded-xl border border-rule text-sm font-semibold text-ink-soft hover:border-jade hover:text-jade transition-colors flex items-center justify-center gap-2"
-                >
-                  <MessageSquare className="size-4" /> Message guest
+                <Link href="/dashboard/messages" className="w-full h-10 rounded-xl border border-rule text-sm font-semibold text-ink-soft hover:border-jade hover:text-jade transition-colors flex items-center justify-center gap-2">
+                  <MessageSquare className="size-4" /> {t('actions.messageGuest')}
                 </Link>
-                <button
-                  type="button"
-                  onClick={() => toast.info('Support team notified')}
-                  className="w-full h-10 rounded-xl border border-rule text-sm font-semibold text-ink-soft hover:border-warn hover:text-warn transition-colors flex items-center justify-center gap-2"
-                >
-                  <AlertTriangle className="size-4" /> Report issue
+                <button type="button" onClick={() => toast.info(t('toast.reportIssue'))} className="w-full h-10 rounded-xl border border-rule text-sm font-semibold text-ink-soft hover:border-warn hover:text-warn transition-colors flex items-center justify-center gap-2">
+                  <AlertTriangle className="size-4" /> {t('actions.reportIssue')}
                 </button>
               </>
             )}
 
             {bk.status === 'completed' && (
               <>
-                <button
-                  type="button"
-                  onClick={() => toast.info('Review feature coming soon')}
-                  className="w-full h-10 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep transition-colors"
-                >
-                  View review
+                <button type="button" onClick={() => toast.info(t('toast.viewReview'))} className="w-full h-10 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep transition-colors">
+                  {t('actions.viewReview')}
                 </button>
-                <Link
-                  href="/dashboard/messages"
-                  className="w-full h-10 rounded-xl border border-rule text-sm font-semibold text-ink-soft hover:border-jade hover:text-jade transition-colors flex items-center justify-center gap-2"
-                >
-                  <MessageSquare className="size-4" /> Message guest
+                <Link href="/dashboard/messages" className="w-full h-10 rounded-xl border border-rule text-sm font-semibold text-ink-soft hover:border-jade hover:text-jade transition-colors flex items-center justify-center gap-2">
+                  <MessageSquare className="size-4" /> {t('actions.messageGuest')}
                 </Link>
               </>
             )}
 
             {/* Payout summary */}
             <div className="mt-2 border-t border-rule pt-3">
-              <p className="text-xs text-ink-mute mb-1">Your payout</p>
+              <p className="text-xs text-ink-mute mb-1">{t('yourPayout')}</p>
               <p className="font-mono text-lg font-bold text-jade">{fmtIdr(bk.payoutIdr)}</p>
               {bk.totalCny > 0 && (
                 <p className="font-mono text-xs text-mist mt-0.5">≈ ¥{bk.totalCny.toLocaleString()}</p>

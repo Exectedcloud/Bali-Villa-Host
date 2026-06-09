@@ -7,33 +7,79 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, Home, Calendar, BookOpen, MessageSquare,
   BarChart3, Banknote, User, ChevronLeft, ChevronRight,
-  LogOut, ExternalLink, Menu, X,
+  LogOut, ExternalLink, Menu, X, Globe,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useTranslations } from 'next-intl';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
 import { useHost } from '@/hooks/useHost';
-
-const NAV_ITEMS = [
-  { label: 'Dashboard',    href: '/dashboard',              icon: LayoutDashboard },
-  { label: 'Listings',     href: '/dashboard/listings',     icon: Home },
-  { label: 'Calendar',     href: '/dashboard/calendar',     icon: Calendar },
-  { label: 'Reservations', href: '/dashboard/reservations', icon: BookOpen },
-  { label: 'Messages',     href: '/dashboard/messages',     icon: MessageSquare },
-  { label: 'Insights',     href: '/dashboard/insights',     icon: BarChart3 },
-  { label: 'Payouts',      href: '/dashboard/payouts',      icon: Banknote },
-  { label: 'Profile',      href: '/dashboard/profile',      icon: User },
-];
+import { useLocale } from '@/providers/LocaleProvider';
 
 function isActive(pathname, href) {
   if (href === '/dashboard') return pathname === '/dashboard';
   return pathname.startsWith(href);
 }
 
+function LanguageSwitcher({ collapsed }) {
+  const [open, setOpen] = useState(false);
+  const { locale, setLocale } = useLocale();
+  const t = useTranslations('language');
+
+  const OPTIONS = [
+    { code: 'id', label: t('id') },
+    { code: 'en', label: t('en') },
+    { code: 'zh', label: t('zh') },
+  ];
+
+  const currentLabel = OPTIONS.find((o) => o.code === locale)?.label ?? locale.toUpperCase();
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className={cn(
+          'flex items-center gap-1.5 w-full rounded-lg px-2 py-1.5 text-xs text-ink-mute hover:bg-surface-alt hover:text-ink transition-colors',
+          collapsed && 'justify-center',
+        )}
+        title={t('label')}
+      >
+        <Globe className="size-3.5 shrink-0" />
+        {!collapsed && <span>{currentLabel}</span>}
+      </button>
+
+      {open && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+          <div className="absolute bottom-full left-0 mb-1 w-40 bg-surface border border-rule rounded-xl shadow-lg overflow-hidden z-50">
+            {OPTIONS.map(({ code, label }) => (
+              <button
+                key={code}
+                type="button"
+                onClick={() => { setLocale(code); setOpen(false); }}
+                className={cn(
+                  'w-full text-left px-3.5 py-2.5 text-xs font-medium transition-colors border-b border-rule last:border-0',
+                  locale === code
+                    ? 'bg-jade-soft text-jade'
+                    : 'text-ink-soft hover:bg-surface-alt hover:text-ink',
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 export function HostSidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const t = useTranslations('nav');
   const [collapsed, setCollapsed] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -50,6 +96,17 @@ export function HostSidebar() {
     onSettled: () => { qc.clear(); router.replace('/login'); },
   });
 
+  const NAV_ITEMS = [
+    { key: 'dashboard',    href: '/dashboard',              icon: LayoutDashboard },
+    { key: 'listings',     href: '/dashboard/listings',     icon: Home },
+    { key: 'calendar',     href: '/dashboard/calendar',     icon: Calendar },
+    { key: 'reservations', href: '/dashboard/reservations', icon: BookOpen },
+    { key: 'messages',     href: '/dashboard/messages',     icon: MessageSquare },
+    { key: 'insights',     href: '/dashboard/insights',     icon: BarChart3 },
+    { key: 'payouts',      href: '/dashboard/payouts',      icon: Banknote },
+    { key: 'profile',      href: '/dashboard/profile',      icon: User },
+  ];
+
   function NavLink({ item, onClick }) {
     const active = isActive(pathname, item.href);
     const Icon = item.icon;
@@ -63,7 +120,7 @@ export function HostSidebar() {
         )}
       >
         <Icon className="size-5 shrink-0" />
-        <span>{item.label}</span>
+        <span>{t(item.key)}</span>
       </Link>
     );
   }
@@ -74,7 +131,7 @@ export function HostSidebar() {
       <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-surface border-b border-rule h-14 flex items-center justify-between px-4 shrink-0">
         <Link href="/dashboard" className="flex items-center gap-2 min-w-0">
           <Image src="/BaliVillalogo.png" alt="BaliVilla" width={120} height={30} className="h-7 w-auto" priority />
-          <span className="text-xs font-medium text-mist hidden sm:inline">for Hosts</span>
+          <span className="text-xs font-medium text-mist hidden sm:inline">{t('forHosts')}</span>
         </Link>
         <button
           type="button"
@@ -138,10 +195,11 @@ export function HostSidebar() {
                     )}
                     <div className="min-w-0">
                       <p className="text-xs font-semibold text-ink truncate">{displayName || 'Host'}</p>
-                      {hostingSince && <p className="text-[11px] text-ink-mute">Host since {hostingSince}</p>}
+                      {hostingSince && <p className="text-[11px] text-ink-mute">{t('hostSince', { year: hostingSince })}</p>}
                     </div>
                   </div>
                 )}
+                <LanguageSwitcher collapsed={false} />
                 <a
                   href="/"
                   target="_blank"
@@ -149,7 +207,7 @@ export function HostSidebar() {
                   className="flex items-center gap-2.5 px-3 py-2.5 w-full rounded-xl text-sm text-ink-soft hover:bg-surface-alt transition-colors"
                 >
                   <ExternalLink className="size-4" />
-                  Preview public site
+                  {t('previewPublicSite')}
                 </a>
                 <button
                   type="button"
@@ -158,7 +216,7 @@ export function HostSidebar() {
                   className="flex items-center gap-2.5 px-3 py-2.5 w-full rounded-xl text-sm text-danger hover:bg-surface-alt transition-colors disabled:opacity-50"
                 >
                   <LogOut className="size-4" />
-                  {signOutMutation.isPending ? 'Signing out…' : 'Log out'}
+                  {signOutMutation.isPending ? t('signingOut') : t('logOut')}
                 </button>
               </div>
             </motion.div>
@@ -178,7 +236,7 @@ export function HostSidebar() {
           {!collapsed && (
             <Link href="/dashboard" className="flex items-center gap-2 flex-1 min-w-0">
               <Image src="/BaliVillalogo.png" alt="BaliVilla" width={140} height={32} className="h-8 w-auto" />
-              <span className="text-xs font-medium text-mist whitespace-nowrap">for Hosts</span>
+              <span className="text-xs font-medium text-mist whitespace-nowrap">{t('forHosts')}</span>
             </Link>
           )}
           {collapsed && (
@@ -218,7 +276,7 @@ export function HostSidebar() {
               <Link
                 key={item.href}
                 href={item.href}
-                title={collapsed ? item.label : undefined}
+                title={collapsed ? t(item.key) : undefined}
                 className={cn(
                   'flex items-center py-2.5 mx-2 rounded-xl text-sm font-medium transition-colors duration-150',
                   collapsed
@@ -227,14 +285,17 @@ export function HostSidebar() {
                 )}
               >
                 <Icon className="size-5 shrink-0" />
-                {!collapsed && <span className="flex-1">{item.label}</span>}
+                {!collapsed && <span className="flex-1">{t(item.key)}</span>}
               </Link>
             );
           })}
         </nav>
 
         {/* Bottom user section */}
-        <div className="border-t border-rule p-3 relative shrink-0">
+        <div className="border-t border-rule p-3 relative shrink-0 space-y-1">
+          {/* Language switcher */}
+          <LanguageSwitcher collapsed={collapsed} />
+
           {dropdownOpen && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} />
@@ -247,7 +308,7 @@ export function HostSidebar() {
                   className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-ink-soft hover:bg-surface-alt transition-colors"
                 >
                   <ExternalLink className="size-4" />
-                  Preview public site
+                  {t('previewPublicSite')}
                 </a>
                 <div className="border-t border-rule" />
                 <button
@@ -257,7 +318,7 @@ export function HostSidebar() {
                   onClick={() => { setDropdownOpen(false); signOutMutation.mutate(); }}
                 >
                   <LogOut className="size-4" />
-                  {signOutMutation.isPending ? 'Signing out…' : 'Log out'}
+                  {signOutMutation.isPending ? t('signingOut') : t('logOut')}
                 </button>
               </div>
             </>
@@ -289,7 +350,7 @@ export function HostSidebar() {
                 {!collapsed && (
                   <div className="flex-1 min-w-0 text-left">
                     <p className="text-xs font-semibold text-ink truncate">{displayName || 'Host'}</p>
-                    {hostingSince && <p className="text-[11px] text-ink-mute truncate">Host since {hostingSince}</p>}
+                    {hostingSince && <p className="text-[11px] text-ink-mute truncate">{t('hostSince', { year: hostingSince })}</p>}
                   </div>
                 )}
               </>

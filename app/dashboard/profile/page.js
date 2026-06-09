@@ -5,26 +5,22 @@ import { Camera, X, Check, Shield, Smartphone, Globe, AlertTriangle } from 'luci
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import { api } from '@/lib/api-client';
 
-const TABS = ['Personal info', 'Hosting preferences', 'Notifications', 'Security'];
+const TAB_KEYS = ['personalInfo', 'hostingPrefs', 'notifications', 'security'];
 
 const ALL_LANGUAGES = ['English', 'Indonesian', 'Mandarin Chinese', 'Japanese', 'Korean', 'French', 'German', 'Spanish', 'Russian', 'Arabic'];
 
-const NOTIF_EVENTS = [
-  { key: 'new_booking',      label: 'New booking confirmed' },
-  { key: 'booking_request',  label: 'Booking request received' },
-  { key: 'new_message',      label: 'New guest message' },
-  { key: 'review_received',  label: 'Guest review posted' },
-  { key: 'payout_sent',      label: 'Payout initiated' },
-  { key: 'price_suggestion', label: 'Smart pricing suggestion' },
-  { key: 'security_alert',   label: 'Account security alert' },
+const NOTIF_EVENT_KEYS = [
+  'new_booking', 'booking_request', 'new_message',
+  'review_received', 'payout_sent', 'price_suggestion', 'security_alert',
 ];
 
 const SESSIONS = [
-  { id: 1, device: 'Chrome on macOS',  location: 'Jakarta, Indonesia',  lastActive: '2 minutes ago',  current: true  },
-  { id: 2, device: 'Safari on iPhone', location: 'Ubud, Bali',          lastActive: '3 hours ago',    current: false },
-  { id: 3, device: 'Chrome on Windows',location: 'Denpasar, Bali',      lastActive: '2 days ago',     current: false },
+  { id: 1, device: 'Chrome on macOS',   location: 'Jakarta, Indonesia', lastActive: '2 minutes ago', current: true  },
+  { id: 2, device: 'Safari on iPhone',  location: 'Ubud, Bali',         lastActive: '3 hours ago',   current: false },
+  { id: 3, device: 'Chrome on Windows', location: 'Denpasar, Bali',     lastActive: '2 days ago',    current: false },
 ];
 
 function Toggle({ checked, onChange }) {
@@ -42,22 +38,18 @@ function Toggle({ checked, onChange }) {
 }
 
 function SaveBar({ onSave }) {
+  const t = useTranslations('common');
   return (
     <div className="flex justify-end pt-2">
-      <button
-        type="button"
-        onClick={onSave}
-        className="px-5 py-2 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep transition-colors"
-      >
-        Save changes
+      <button type="button" onClick={onSave} className="px-5 py-2 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep transition-colors">
+        {t('save')}
       </button>
     </div>
   );
 }
 
-// ── Tab: Personal info ────────────────────────────────────────────────────────
-
 function PersonalInfoTab({ meData }) {
+  const t = useTranslations('profile');
   const [name,  setName]  = useState(meData?.host?.displayName ?? '');
   const [bio,   setBio]   = useState(meData?.host?.bio ?? '');
   const [phone, setPhone] = useState(meData?.user?.phone ?? '');
@@ -81,16 +73,9 @@ function PersonalInfoTab({ meData }) {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Avatar */}
       <div>
-        <label className="text-xs font-semibold uppercase tracking-wide text-ink-mute block mb-2">Profile photo</label>
-        <input
-          ref={avatarInputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={handleAvatarChange}
-        />
+        <label className="text-xs font-semibold uppercase tracking-wide text-ink-mute block mb-2">{t('personal.profilePhoto')}</label>
+        <input ref={avatarInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
         <div className="flex items-center gap-4">
           <div className="relative group">
             {avatarUrl ? (
@@ -100,66 +85,40 @@ function PersonalInfoTab({ meData }) {
                 {(name || '?')[0].toUpperCase()}
               </div>
             )}
-            <button
-              type="button"
-              onClick={() => avatarInputRef.current?.click()}
-              className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
-            >
+            <button type="button" onClick={() => avatarInputRef.current?.click()} className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
               <Camera className="size-5 text-white" />
             </button>
           </div>
           <div className="text-xs text-ink-mute leading-relaxed">
-            <p className="font-medium text-ink mb-0.5">Upload a new photo</p>
-            <p>JPG or PNG · Max 4 MB · Minimum 400×400 px</p>
+            <p className="font-medium text-ink mb-0.5">{t('personal.uploadPhoto')}</p>
+            <p>{t('personal.photoHint')}</p>
             <button type="button" onClick={() => avatarInputRef.current?.click()} className="text-jade font-medium mt-1 hover:text-jade-deep transition-colors">
-              Choose file
+              {t('personal.chooseFile')}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Name */}
       <div>
         <label className="text-xs font-semibold uppercase tracking-wide text-ink-mute block mb-1.5">
-          Display name <span className="text-ink-mute/60 font-normal normal-case">(visible to guests)</span>
+          {t('personal.displayName')} <span className="text-ink-mute/60 font-normal normal-case">{t('personal.visibleToGuests')}</span>
         </label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full h-10 px-3 text-sm border border-rule rounded-xl bg-surface focus:outline-none focus:ring-1 focus:ring-jade"
-        />
+        <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full h-10 px-3 text-sm border border-rule rounded-xl bg-surface focus:outline-none focus:ring-1 focus:ring-jade" />
       </div>
 
-      {/* Bio */}
       <div>
-        <label className="text-xs font-semibold uppercase tracking-wide text-ink-mute block mb-1.5">Bio</label>
-        <textarea
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-          rows={4}
-          className="w-full px-3 py-2.5 text-sm border border-rule rounded-xl bg-surface focus:outline-none focus:ring-1 focus:ring-jade resize-none leading-relaxed"
-        />
-        <p className="text-[11px] text-ink-mute mt-1">{bio.length} / 500 characters</p>
+        <label className="text-xs font-semibold uppercase tracking-wide text-ink-mute block mb-1.5">{t('personal.bio')}</label>
+        <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={4} className="w-full px-3 py-2.5 text-sm border border-rule rounded-xl bg-surface focus:outline-none focus:ring-1 focus:ring-jade resize-none leading-relaxed" />
+        <p className="text-[11px] text-ink-mute mt-1">{t('personal.charCount', { count: bio.length })}</p>
       </div>
 
-      {/* Languages */}
       <div>
-        <label className="text-xs font-semibold uppercase tracking-wide text-ink-mute block mb-2">Languages spoken</label>
+        <label className="text-xs font-semibold uppercase tracking-wide text-ink-mute block mb-2">{t('personal.languagesSpoken')}</label>
         <div className="flex flex-wrap gap-2">
           {ALL_LANGUAGES.map((lang) => {
             const selected = langs.includes(lang);
             return (
-              <button
-                key={lang}
-                type="button"
-                onClick={() => toggleLang(lang)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-                  selected
-                    ? 'bg-jade text-white border-jade'
-                    : 'bg-surface text-ink-soft border-rule hover:border-jade/40 hover:text-ink'
-                }`}
-              >
+              <button key={lang} type="button" onClick={() => toggleLang(lang)} className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? 'bg-jade text-white border-jade' : 'bg-surface text-ink-soft border-rule hover:border-jade/40 hover:text-ink'}`}>
                 {selected && <Check className="size-3" />}
                 {lang}
               </button>
@@ -168,108 +127,88 @@ function PersonalInfoTab({ meData }) {
         </div>
       </div>
 
-      {/* Contact */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="text-xs font-semibold uppercase tracking-wide text-ink-mute block mb-1.5">
-            Email <span className="text-ink-mute/60 font-normal normal-case">(read-only)</span>
+            {t('personal.email')} <span className="text-ink-mute/60 font-normal normal-case">{t('personal.readOnly')}</span>
           </label>
-          <input
-            type="email"
-            value={email}
-            readOnly
-            className="w-full h-10 px-3 text-sm border border-rule rounded-xl bg-surface-alt text-ink-mute cursor-default"
-          />
+          <input type="email" value={email} readOnly className="w-full h-10 px-3 text-sm border border-rule rounded-xl bg-surface-alt text-ink-mute cursor-default" />
         </div>
         <div>
-          <label className="text-xs font-semibold uppercase tracking-wide text-ink-mute block mb-1.5">Phone number</label>
+          <label className="text-xs font-semibold uppercase tracking-wide text-ink-mute block mb-1.5">{t('personal.phone')}</label>
           <div className="flex gap-2">
             <select className="h-10 px-2 text-sm border border-rule rounded-xl bg-surface focus:outline-none focus:ring-1 focus:ring-jade w-20 shrink-0">
               <option>+62</option><option>+1</option><option>+44</option><option>+86</option>
             </select>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="flex-1 h-10 px-3 text-sm border border-rule rounded-xl bg-surface focus:outline-none focus:ring-1 focus:ring-jade"
-            />
+            <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="flex-1 h-10 px-3 text-sm border border-rule rounded-xl bg-surface focus:outline-none focus:ring-1 focus:ring-jade" />
           </div>
         </div>
       </div>
 
-      <SaveBar onSave={() => toast.success('Profile updated')} />
+      <SaveBar onSave={() => toast.success(t('personal.savedToast'))} />
     </div>
   );
 }
 
-// ── Tab: Hosting preferences ──────────────────────────────────────────────────
-
 function HostingPrefsTab() {
-  const [autoReply,  setAutoReply]  = useState(true);
-  const [replyMsg,   setReplyMsg]   = useState('Thank you for your enquiry! I will get back to you within a few hours with full details about availability and pricing.');
-  const [respGoal,   setRespGoal]   = useState('Within 12 hours');
-  const [available,  setAvailable]  = useState(true);
+  const t = useTranslations('profile');
+  const [autoReply, setAutoReply] = useState(true);
+  const [replyMsg,  setReplyMsg]  = useState('Thank you for your enquiry! I will get back to you within a few hours with full details about availability and pricing.');
+  const [respGoal,  setRespGoal]  = useState('12h');
+  const [available, setAvailable] = useState(true);
+
+  const RESPONSE_OPTIONS = [
+    { key: '1h',  label: t('prefs.options.1h') },
+    { key: '12h', label: t('prefs.options.12h') },
+    { key: '24h', label: t('prefs.options.24h') },
+    { key: '48h', label: t('prefs.options.48h') },
+  ];
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Auto-reply */}
       <div className="bg-surface-alt/60 rounded-xl p-4 flex flex-col gap-3">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold text-ink">Auto-reply for new inquiries</p>
-            <p className="text-xs text-ink-mute mt-0.5">Guests receive this message instantly when they make an enquiry</p>
+            <p className="text-sm font-semibold text-ink">{t('prefs.autoReply')}</p>
+            <p className="text-xs text-ink-mute mt-0.5">{t('prefs.autoReplyDesc')}</p>
           </div>
           <Toggle checked={autoReply} onChange={setAutoReply} />
         </div>
         {autoReply && (
-          <textarea
-            value={replyMsg}
-            onChange={(e) => setReplyMsg(e.target.value)}
-            rows={3}
-            className="w-full px-3 py-2.5 text-sm border border-rule rounded-xl bg-surface focus:outline-none focus:ring-1 focus:ring-jade resize-none leading-relaxed"
-          />
+          <textarea value={replyMsg} onChange={(e) => setReplyMsg(e.target.value)} rows={3} className="w-full px-3 py-2.5 text-sm border border-rule rounded-xl bg-surface focus:outline-none focus:ring-1 focus:ring-jade resize-none leading-relaxed" />
         )}
       </div>
 
-      {/* Response time */}
       <div>
-        <label className="text-xs font-semibold uppercase tracking-wide text-ink-mute block mb-1.5">Response time goal</label>
-        <select
-          value={respGoal}
-          onChange={(e) => setRespGoal(e.target.value)}
-          className="h-10 px-3 text-sm border border-rule rounded-xl bg-surface focus:outline-none focus:ring-1 focus:ring-jade w-full sm:w-64 appearance-none"
-        >
-          {['Within 1 hour', 'Within 12 hours', 'Within 24 hours', 'Within 48 hours'].map((o) => (
-            <option key={o}>{o}</option>
+        <label className="text-xs font-semibold uppercase tracking-wide text-ink-mute block mb-1.5">{t('prefs.responseTimeGoal')}</label>
+        <select value={respGoal} onChange={(e) => setRespGoal(e.target.value)} className="h-10 px-3 text-sm border border-rule rounded-xl bg-surface focus:outline-none focus:ring-1 focus:ring-jade w-full sm:w-64 appearance-none">
+          {RESPONSE_OPTIONS.map(({ key, label }) => (
+            <option key={key} value={key}>{label}</option>
           ))}
         </select>
-        <p className="text-xs text-ink-mute mt-1.5">Shown on your listings — faster response rates improve search ranking</p>
+        <p className="text-xs text-ink-mute mt-1.5">{t('prefs.responseTimeHint')}</p>
       </div>
 
-      {/* Availability */}
       <div className="flex items-start justify-between gap-4 p-4 bg-surface-alt/60 rounded-xl">
         <div>
-          <p className="text-sm font-semibold text-ink">Available for new bookings</p>
+          <p className="text-sm font-semibold text-ink">{t('prefs.available')}</p>
           <p className="text-xs text-ink-mute mt-0.5">
-            {available
-              ? 'Your listings are accepting new reservations'
-              : 'All your listings appear fully booked to guests'}
+            {available ? t('prefs.acceptingDesc') : t('prefs.fullyBookedDesc')}
           </p>
         </div>
         <Toggle checked={available} onChange={setAvailable} />
       </div>
 
-      <SaveBar onSave={() => toast.success('Preferences saved')} />
+      <SaveBar onSave={() => toast.success(t('prefs.savedToast'))} />
     </div>
   );
 }
 
-// ── Tab: Notifications ────────────────────────────────────────────────────────
-
 function NotificationsTab() {
+  const t = useTranslations('profile');
   const [settings, setSettings] = useState(
     Object.fromEntries(
-      NOTIF_EVENTS.map(({ key }) => [
+      NOTIF_EVENT_KEYS.map((key) => [
         key,
         { email: true, sms: key !== 'price_suggestion', inapp: true },
       ])
@@ -285,29 +224,26 @@ function NotificationsTab() {
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-sm text-ink-mute">Choose how you want to be notified for each event type.</p>
+      <p className="text-sm text-ink-mute">{t('notif.header')}</p>
       <div className="bg-surface rounded-xl border border-rule overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-rule bg-surface-alt/50">
               <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wide text-ink-mute">Event</th>
-              {['Email', 'SMS', 'In-app'].map((ch) => (
-                <th key={ch} className="text-center px-4 py-3 text-xs font-semibold uppercase tracking-wide text-ink-mute w-20">{ch}</th>
+              {['email', 'sms', 'inapp'].map((ch) => (
+                <th key={ch} className="text-center px-4 py-3 text-xs font-semibold uppercase tracking-wide text-ink-mute w-20">
+                  {t(`notif.${ch}`)}
+                </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {NOTIF_EVENTS.map(({ key, label }) => (
+            {NOTIF_EVENT_KEYS.map((key) => (
               <tr key={key} className="border-b border-rule last:border-0 hover:bg-surface-alt/40 transition-colors">
-                <td className="px-5 py-3 text-sm font-medium text-ink">{label}</td>
+                <td className="px-5 py-3 text-sm font-medium text-ink">{t(`notif.events.${key}`)}</td>
                 {(['email', 'sms', 'inapp']).map((ch) => (
                   <td key={ch} className="px-4 py-3 text-center">
-                    <input
-                      type="checkbox"
-                      checked={settings[key][ch]}
-                      onChange={() => toggle(key, ch)}
-                      className="size-4 rounded border-rule accent-jade cursor-pointer"
-                    />
+                    <input type="checkbox" checked={settings[key][ch]} onChange={() => toggle(key, ch)} className="size-4 rounded border-rule accent-jade cursor-pointer" />
                   </td>
                 ))}
               </tr>
@@ -315,14 +251,13 @@ function NotificationsTab() {
           </tbody>
         </table>
       </div>
-      <SaveBar onSave={() => toast.success('Notification preferences saved')} />
+      <SaveBar onSave={() => toast.success(t('notif.savedToast'))} />
     </div>
   );
 }
 
-// ── Tab: Security ─────────────────────────────────────────────────────────────
-
 function SecurityTab() {
+  const t = useTranslations('profile');
   const [twoFA,      setTwoFA]      = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [deleteConf, setDeleteConf] = useState('');
@@ -330,54 +265,51 @@ function SecurityTab() {
 
   function signOutSession(id) {
     setSessions((prev) => prev.filter((s) => s.id !== id));
-    toast.success('Session signed out');
+    toast.success(t('security.sessionSignedOutToast'));
   }
 
   function handleDelete() {
-    if (deleteConf !== 'DELETE') { toast.error('Type DELETE to confirm'); return; }
-    toast.error('Account deletion request submitted — you will receive a confirmation email');
+    if (deleteConf !== 'DELETE') { toast.error(t('security.modal.typeError')); return; }
+    toast.error(t('security.modal.submittedToast'));
     setShowDelete(false);
   }
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Change password */}
       <div className="bg-surface-alt/60 rounded-xl p-5 flex flex-col gap-4">
-        <h3 className="text-sm font-semibold text-ink">Change password</h3>
+        <h3 className="text-sm font-semibold text-ink">{t('security.changePassword')}</h3>
         {[
-          { label: 'Current password', id: 'curr' },
-          { label: 'New password',     id: 'new'  },
-          { label: 'Confirm new',      id: 'conf' },
-        ].map(({ label, id }) => (
+          { key: 'currentPassword', id: 'curr' },
+          { key: 'newPassword',     id: 'new'  },
+          { key: 'confirmNew',      id: 'conf' },
+        ].map(({ key, id }) => (
           <div key={id}>
-            <label htmlFor={id} className="text-xs font-semibold uppercase tracking-wide text-ink-mute block mb-1.5">{label}</label>
+            <label htmlFor={id} className="text-xs font-semibold uppercase tracking-wide text-ink-mute block mb-1.5">{t(`security.${key}`)}</label>
             <input id={id} type="password" className="w-full h-10 px-3 text-sm border border-rule rounded-xl bg-surface focus:outline-none focus:ring-1 focus:ring-jade" />
           </div>
         ))}
-        <button type="button" onClick={() => toast.success('Password updated')} className="self-start px-5 py-2 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep transition-colors">
-          Update password
+        <button type="button" onClick={() => toast.success(t('security.passwordUpdatedToast'))} className="self-start px-5 py-2 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep transition-colors">
+          {t('security.updatePassword')}
         </button>
       </div>
 
-      {/* 2FA */}
       <div className="flex items-start justify-between gap-4 p-5 bg-surface-alt/60 rounded-xl">
         <div className="flex gap-3">
           <Shield className={`size-5 mt-0.5 shrink-0 ${twoFA ? 'text-jade' : 'text-ink-mute'}`} />
           <div>
-            <p className="text-sm font-semibold text-ink">Two-factor authentication</p>
+            <p className="text-sm font-semibold text-ink">{t('security.twoFA')}</p>
             <p className="text-xs text-ink-mute mt-0.5">
-              {twoFA ? 'Your account is protected with 2FA via authenticator app' : 'Add an extra layer of security to your account'}
+              {twoFA ? t('security.twoFAEnabled') : t('security.twoFADisabled')}
             </p>
           </div>
         </div>
-        <Toggle checked={twoFA} onChange={(v) => { setTwoFA(v); toast.success(v ? '2FA enabled' : '2FA disabled'); }} />
+        <Toggle checked={twoFA} onChange={(v) => { setTwoFA(v); toast.success(v ? t('security.twoFAEnabledToast') : t('security.twoFADisabledToast')); }} />
       </div>
 
-      {/* Active sessions */}
       <div className="bg-surface rounded-xl border border-rule overflow-hidden">
         <div className="px-5 py-4 border-b border-rule flex items-center gap-2">
           <Smartphone className="size-4 text-ink-mute" />
-          <h3 className="text-sm font-semibold text-ink">Active sessions</h3>
+          <h3 className="text-sm font-semibold text-ink">{t('security.activeSessions')}</h3>
         </div>
         <div className="divide-y divide-rule">
           {sessions.map((s) => (
@@ -386,18 +318,14 @@ function SecurityTab() {
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-medium text-ink">{s.device}</p>
                   {s.current && (
-                    <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-jade-soft text-jade">Current</span>
+                    <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-jade-soft text-jade">{t('security.current')}</span>
                   )}
                 </div>
                 <p className="text-xs text-ink-mute mt-0.5">{s.location} · {s.lastActive}</p>
               </div>
               {!s.current && (
-                <button
-                  type="button"
-                  onClick={() => signOutSession(s.id)}
-                  className="text-xs font-semibold text-ink-mute hover:text-danger transition-colors shrink-0"
-                >
-                  Sign out
+                <button type="button" onClick={() => signOutSession(s.id)} className="text-xs font-semibold text-ink-mute hover:text-danger transition-colors shrink-0">
+                  {t('security.signOut')}
                 </button>
               )}
             </div>
@@ -405,73 +333,56 @@ function SecurityTab() {
         </div>
       </div>
 
-      {/* Danger zone */}
       <div className="border border-danger/30 rounded-xl p-5 bg-danger/5">
         <div className="flex items-start gap-3">
           <AlertTriangle className="size-5 text-danger shrink-0 mt-0.5" />
           <div className="flex-1">
-            <h3 className="text-sm font-semibold text-danger">Danger zone</h3>
-            <p className="text-xs text-ink-mute mt-1 mb-3">
-              Permanently delete your host account and all listings. This cannot be undone.
-            </p>
-            <button
-              type="button"
-              onClick={() => setShowDelete(true)}
-              className="px-4 py-2 rounded-xl border border-danger text-danger text-sm font-semibold hover:bg-danger hover:text-white transition-colors"
-            >
-              Delete account
+            <h3 className="text-sm font-semibold text-danger">{t('security.dangerZone')}</h3>
+            <p className="text-xs text-ink-mute mt-1 mb-3">{t('security.dangerZoneDesc')}</p>
+            <button type="button" onClick={() => setShowDelete(true)} className="px-4 py-2 rounded-xl border border-danger text-danger text-sm font-semibold hover:bg-danger hover:text-white transition-colors">
+              {t('security.deleteAccount')}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Delete confirmation modal */}
       <AnimatePresence>
       {showDelete && (
         <motion.div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
           transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
           onClick={() => setShowDelete(false)}
         >
           <div className="absolute inset-0 bg-black/40" />
           <motion.div
             className="relative bg-surface rounded-2xl border border-rule shadow-xl w-full max-w-md p-6"
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.96 }}
+            initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-danger">Delete account</h3>
+              <h3 className="text-lg font-semibold text-danger">{t('security.modal.title')}</h3>
               <button type="button" onClick={() => setShowDelete(false)} className="size-7 flex items-center justify-center rounded-lg text-ink-mute hover:bg-surface-alt">
                 <X className="size-4" />
               </button>
             </div>
             <p className="text-sm text-ink-mute mb-4">
-              This will permanently delete your account and all your listings. Type <strong className="text-ink">DELETE</strong> to confirm.
+              {t('security.modal.desc')}
             </p>
             <input
               type="text"
-              placeholder="Type DELETE"
+              placeholder={t('security.modal.placeholder')}
               value={deleteConf}
               onChange={(e) => setDeleteConf(e.target.value)}
               className="w-full h-10 px-3 text-sm border border-rule rounded-xl bg-surface focus:outline-none focus:ring-1 focus:ring-danger mb-4"
             />
             <div className="flex gap-3">
               <button type="button" onClick={() => setShowDelete(false)} className="flex-1 h-10 rounded-xl border border-rule text-sm font-semibold text-ink-soft hover:bg-surface-alt transition-colors">
-                Cancel
+                {t('security.modal.cancel')}
               </button>
-              <button
-                type="button"
-                onClick={handleDelete}
-                disabled={deleteConf !== 'DELETE'}
-                className="flex-1 h-10 rounded-xl bg-danger text-white text-sm font-semibold hover:bg-danger/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >
-                Delete permanently
+              <button type="button" onClick={handleDelete} disabled={deleteConf !== 'DELETE'} className="flex-1 h-10 rounded-xl bg-danger text-white text-sm font-semibold hover:bg-danger/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                {t('security.modal.deletePermanently')}
               </button>
             </div>
           </motion.div>
@@ -482,10 +393,9 @@ function SecurityTab() {
   );
 }
 
-// ── Page ───────────────────────────────────────────────────────────────────────
-
 export default function ProfilePage() {
-  const [activeTab, setActiveTab] = useState('Personal info');
+  const t = useTranslations('profile');
+  const [activeTab, setActiveTab] = useState('personalInfo');
 
   const { data: meData } = useQuery({
     queryKey: ['host-me'],
@@ -508,42 +418,39 @@ export default function ProfilePage() {
           </div>
         )}
         <div>
-          <h1 className="font-display text-3xl font-medium text-ink">{displayName || 'Your profile'}</h1>
+          <h1 className="font-display text-3xl font-medium text-ink">{displayName || t('yourProfile')}</h1>
           {meData?.host && (
             <p className="text-sm text-ink-mute mt-0.5">
-              Hosting since {meData.host.hostingSince} · {meData.host.responseRate}% response rate
+              {t('hostingSince', { year: meData.host.hostingSince, rate: meData.host.responseRate })}
             </p>
           )}
         </div>
       </div>
 
       {/* Tabs */}
-      <div
-        className="flex gap-1 border-b border-rule overflow-x-auto"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
-        {TABS.map((tab) => (
+      <div className="flex gap-1 border-b border-rule overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        {TAB_KEYS.map((key) => (
           <button
-            key={tab}
+            key={key}
             type="button"
-            onClick={() => setActiveTab(tab)}
+            onClick={() => setActiveTab(key)}
             className={`shrink-0 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap min-h-[44px] ${
-              activeTab === tab
+              activeTab === key
                 ? 'border-jade text-jade'
                 : 'border-transparent text-ink-mute hover:text-ink'
             }`}
           >
-            {tab}
+            {t(`tabs.${key}`)}
           </button>
         ))}
       </div>
 
       {/* Tab content */}
       <div>
-        {activeTab === 'Personal info'       && <PersonalInfoTab key={meData?.user?.id} meData={meData} />}
-        {activeTab === 'Hosting preferences' && <HostingPrefsTab />}
-        {activeTab === 'Notifications'       && <NotificationsTab />}
-        {activeTab === 'Security'            && <SecurityTab />}
+        {activeTab === 'personalInfo'  && <PersonalInfoTab key={meData?.user?.id} meData={meData} />}
+        {activeTab === 'hostingPrefs'  && <HostingPrefsTab />}
+        {activeTab === 'notifications' && <NotificationsTab />}
+        {activeTab === 'security'      && <SecurityTab />}
       </div>
     </div>
   );

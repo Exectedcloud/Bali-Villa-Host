@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Banknote, Clock, TrendingUp, X, CheckCircle, ExternalLink, Pencil } from 'lucide-react';
+import { Banknote, Clock, TrendingUp, X, CheckCircle, ExternalLink, Pencil, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 import { PAYOUTS } from '@/lib/mock-data';
 
 const EXTRA_PAYOUTS = [
@@ -13,46 +14,37 @@ const EXTRA_PAYOUTS = [
 
 const ALL_PAYOUTS = [...PAYOUTS, ...EXTRA_PAYOUTS].sort((a, b) => b.date.localeCompare(a.date));
 
-const BALANCE_CARDS = [
+const BALANCE_CARDS_DATA = [
   {
     key: 'available',
-    label: 'Available balance',
     valueIdr: 82500000,
     sub: '≈ $5,322',
-    note: 'Ready to withdraw',
-    noteColor: 'text-success',
     icon: Banknote,
     iconBg: 'bg-jade-soft',
     iconColor: 'text-jade',
   },
   {
     key: 'pending',
-    label: 'Pending balance',
     valueIdr: 19350000,
     sub: null,
-    note: 'Bookings still in 24h hold',
-    noteColor: 'text-mist-deep',
     icon: Clock,
     iconBg: 'bg-mist/20',
     iconColor: 'text-mist-deep',
   },
   {
     key: 'upcoming',
-    label: 'Upcoming earnings',
     valueIdr: 43800000,
     sub: null,
-    note: 'From confirmed future bookings',
-    noteColor: 'text-mist-deep',
     icon: TrendingUp,
     iconBg: 'bg-gold/10',
     iconColor: 'text-gold',
   },
 ];
 
-const STATUS_META = {
-  completed: { label: 'Completed', cls: 'bg-jade/10 text-jade' },
-  pending:   { label: 'Pending',   cls: 'bg-warn/10 text-warn' },
-  failed:    { label: 'Failed',    cls: 'bg-danger/10 text-danger' },
+const STATUS_CLS = {
+  completed: 'bg-jade/10 text-jade',
+  pending:   'bg-warn/10 text-warn',
+  failed:    'bg-danger/10 text-danger',
 };
 
 const MIN_WITHDRAWAL = 5_000_000;
@@ -60,23 +52,30 @@ const MIN_WITHDRAWAL = 5_000_000;
 function fmtIdr(n) { return `Rp ${n.toLocaleString('id-ID')}`; }
 
 export default function PayoutsPage() {
-  const [showModal,  setShowModal]  = useState(false);
+  const t = useTranslations('payouts');
+  const [showModal,   setShowModal]   = useState(false);
   const [withdrawAmt, setWithdrawAmt] = useState('82500000');
 
-  const available = BALANCE_CARDS[0].valueIdr;
+  const available = BALANCE_CARDS_DATA[0].valueIdr;
   const canWithdraw = available >= MIN_WITHDRAWAL;
+
+  const NOTE_BY_KEY = {
+    available: { note: t('balance.readyToWithdraw'),     noteColor: 'text-success' },
+    pending:   { note: t('balance.bookingsOnHold'),       noteColor: 'text-mist-deep' },
+    upcoming:  { note: t('balance.fromFutureBookings'),   noteColor: 'text-mist-deep' },
+  };
 
   function handleWithdraw() {
     const amt = Number(withdrawAmt);
     if (!amt || amt < MIN_WITHDRAWAL) {
-      toast.error(`Minimum withdrawal is ${fmtIdr(MIN_WITHDRAWAL)}`);
+      toast.error(t('toast.errorMin', { amount: fmtIdr(MIN_WITHDRAWAL) }));
       return;
     }
     if (amt > available) {
-      toast.error('Amount exceeds available balance');
+      toast.error(t('toast.errorExceeds'));
       return;
     }
-    toast.success(`Withdrawal of ${fmtIdr(amt)} initiated — arrives in 1–3 business days`);
+    toast.success(t('toast.initiated', { amount: fmtIdr(amt) }));
     setShowModal(false);
   }
 
@@ -85,58 +84,60 @@ export default function PayoutsPage() {
 
       {/* Header */}
       <div>
-        <h1 className="font-display text-3xl font-medium text-ink">
-          Payouts{' '}
-          <span className="font-sans font-normal text-xl text-ink-mute">收款管理</span>
-        </h1>
-        <p className="text-sm text-ink-mute mt-1">
-          Earnings from your 3 properties — paid to BCA ****4821
-        </p>
+        <h1 className="font-display text-3xl font-medium text-ink">{t('title')}</h1>
+        <p className="text-sm text-ink-mute mt-1">{t('subtitle', { count: 3, account: 'BCA ****4821' })}</p>
+      </div>
+
+      {/* Airwallex disclaimer */}
+      <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-jade-soft border border-jade/20 text-sm text-ink-soft">
+        <Info className="size-4 text-jade shrink-0 mt-0.5" />
+        <p>{t('airwallexNote')}</p>
       </div>
 
       {/* Balance cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {BALANCE_CARDS.map(({ key, label, valueIdr, sub, note, noteColor, icon: Icon, iconBg, iconColor }) => (
-          <div key={key} className="bg-surface rounded-xl border border-rule shadow-sm p-5 flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-widest text-ink-mute">{label}</span>
-              <div className={`size-8 rounded-lg ${iconBg} flex items-center justify-center`}>
-                <Icon className={`size-4 ${iconColor}`} />
+        {BALANCE_CARDS_DATA.map(({ key, valueIdr, sub, icon: Icon, iconBg, iconColor }) => {
+          const { note, noteColor } = NOTE_BY_KEY[key];
+          return (
+            <div key={key} className="bg-surface rounded-xl border border-rule shadow-sm p-5 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold uppercase tracking-widest text-ink-mute">{t(`balance.${key}`)}</span>
+                <div className={`size-8 rounded-lg ${iconBg} flex items-center justify-center`}>
+                  <Icon className={`size-4 ${iconColor}`} />
+                </div>
               </div>
+              <div>
+                <p className="font-display text-3xl font-medium text-ink">{fmtIdr(valueIdr)}</p>
+                {sub && <p className="font-mono text-xs text-mist mt-0.5">{sub}</p>}
+              </div>
+              <p className={`text-xs font-medium ${noteColor}`}>{note}</p>
+              {key === 'available' && (
+                <button
+                  type="button"
+                  onClick={() => setShowModal(true)}
+                  disabled={!canWithdraw}
+                  className="mt-1 w-full h-9 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  {t('withdrawNow')}
+                </button>
+              )}
             </div>
-            <div>
-              <p className="font-display text-3xl font-medium text-ink">
-                {fmtIdr(valueIdr)}
-              </p>
-              {sub && <p className="font-mono text-xs text-mist mt-0.5">{sub}</p>}
-            </div>
-            <p className={`text-xs font-medium ${noteColor}`}>{note}</p>
-
-            {key === 'available' && (
-              <button
-                type="button"
-                onClick={() => setShowModal(true)}
-                disabled={!canWithdraw}
-                className="mt-1 w-full h-9 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >
-                Withdraw now
-              </button>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Payout history */}
       <div className="bg-surface rounded-xl border border-rule shadow-sm overflow-hidden">
         <div className="px-5 py-4 border-b border-rule">
-          <h2 className="text-sm font-semibold text-ink">Payout history</h2>
-          <p className="text-xs text-ink-mute mt-0.5">{ALL_PAYOUTS.length} payouts on record</p>
+          <h2 className="text-sm font-semibold text-ink">{t('payoutHistory')}</h2>
+          <p className="text-xs text-ink-mute mt-0.5">{t('payoutsOnRecord', { count: ALL_PAYOUTS.length })}</p>
         </div>
 
         {/* Mobile cards */}
         <div className="md:hidden divide-y divide-rule">
           {ALL_PAYOUTS.map((p) => {
-            const { label, cls } = STATUS_META[p.status] ?? { label: p.status, cls: 'bg-mist/10 text-mist' };
+            const statusLabel = t(`status.${p.status}`);
+            const cls = STATUS_CLS[p.status] ?? 'bg-mist/10 text-mist';
             return (
               <div key={p.id} className="px-5 py-4 flex items-center gap-3">
                 <div className="flex-1 min-w-0">
@@ -146,7 +147,7 @@ export default function PayoutsPage() {
                 </div>
                 <span className={`shrink-0 inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full ${cls}`}>
                   {p.status === 'completed' && <CheckCircle className="size-3" />}
-                  {label}
+                  {statusLabel}
                 </span>
               </div>
             );
@@ -158,21 +159,24 @@ export default function PayoutsPage() {
           <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="border-b border-rule bg-surface-alt/50">
-                {['Date', 'Amount', 'Method', 'Status', 'Reference', ''].map((h, i) => (
-                  <th
-                    key={h || i}
-                    className={`px-5 py-3 text-xs font-semibold uppercase tracking-wide text-ink-mute whitespace-nowrap ${
-                      h === 'Amount' ? 'text-right' : h === '' ? '' : 'text-left'
-                    }`}
-                  >
-                    {h}
+                {[
+                  { key: 'date',   label: t('table.date'),   align: 'text-left' },
+                  { key: 'amount', label: t('table.amount'),  align: 'text-right' },
+                  { key: 'method', label: t('table.method'),  align: 'text-left' },
+                  { key: 'status', label: t('table.status'),  align: 'text-left' },
+                  { key: 'ref',    label: t('table.reference'), align: 'text-left' },
+                  { key: 'action', label: '',                 align: '' },
+                ].map(({ key, label, align }) => (
+                  <th key={key} className={`px-5 py-3 text-xs font-semibold uppercase tracking-wide text-ink-mute whitespace-nowrap ${align}`}>
+                    {label}
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {ALL_PAYOUTS.map((p) => {
-                const { label, cls } = STATUS_META[p.status] ?? { label: p.status, cls: 'bg-mist/10 text-mist' };
+                const statusLabel = t(`status.${p.status}`);
+                const cls = STATUS_CLS[p.status] ?? 'bg-mist/10 text-mist';
                 return (
                   <tr key={p.id} className="border-b border-rule last:border-0 hover:bg-surface-alt/40 transition-colors">
                     <td className="px-5 py-3 text-sm text-ink whitespace-nowrap">{p.date}</td>
@@ -181,13 +185,13 @@ export default function PayoutsPage() {
                     <td className="px-5 py-3">
                       <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full ${cls}`}>
                         {p.status === 'completed' && <CheckCircle className="size-3" />}
-                        {label}
+                        {statusLabel}
                       </span>
                     </td>
                     <td className="px-5 py-3 font-mono text-xs text-ink-mute">{p.reference}</td>
                     <td className="px-5 py-3">
-                      <button type="button" onClick={() => toast.info('Receipt download coming soon')} className="inline-flex items-center gap-1 text-xs font-semibold text-jade hover:text-jade-deep transition-colors">
-                        <ExternalLink className="size-3" /> Receipt
+                      <button type="button" onClick={() => toast.info(t('toast.receiptSoon'))} className="inline-flex items-center gap-1 text-xs font-semibold text-jade hover:text-jade-deep transition-colors">
+                        <ExternalLink className="size-3" /> {t('receipt')}
                       </button>
                     </td>
                   </tr>
@@ -202,28 +206,28 @@ export default function PayoutsPage() {
       <div className="bg-surface rounded-xl border border-rule shadow-sm p-5">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-sm font-semibold text-ink">Banking information</h2>
-            <p className="text-xs text-ink-mute mt-0.5">Where your payouts are sent</p>
+            <h2 className="text-sm font-semibold text-ink">{t('bankingInfo')}</h2>
+            <p className="text-xs text-ink-mute mt-0.5">{t('bankingInfoDesc')}</p>
           </div>
           <button
             type="button"
-            onClick={() => toast.info('Re-verification required — check your email to continue')}
+            onClick={() => toast.info(t('toast.bankEditNote'))}
             className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border border-rule text-ink-soft hover:border-jade hover:text-jade transition-colors"
           >
-            <Pencil className="size-3.5" /> Edit banking info
+            <Pencil className="size-3.5" /> {t('editBankingInfo')}
           </button>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {[
-            { label: 'Bank name',       value: 'Bank Central Asia (BCA)' },
-            { label: 'Account holder',  value: 'Wayan Sudana' },
-            { label: 'Account number',  value: '****  ****  4821' },
-            { label: 'SWIFT / BIC',     value: 'CENAIDJA' },
-            { label: 'Payout currency', value: 'IDR (Indonesian Rupiah)' },
-            { label: 'Payout schedule', value: 'Within 24h of checkout' },
-          ].map(({ label, value }) => (
-            <div key={label} className="bg-surface-alt rounded-lg p-3">
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-ink-mute">{label}</p>
+            { key: 'bankName',     value: 'Bank Central Asia (BCA)' },
+            { key: 'accountHolder', value: 'Wayan Sudana' },
+            { key: 'accountNumber', value: '****  ****  4821' },
+            { key: 'swift',         value: 'CENAIDJA' },
+            { key: 'currency',      value: 'IDR (Indonesian Rupiah)' },
+            { key: 'schedule',      value: 'Within 24h of checkout' },
+          ].map(({ key, value }) => (
+            <div key={key} className="bg-surface-alt rounded-lg p-3">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-ink-mute">{t(`bankFields.${key}`)}</p>
               <p className="text-sm font-medium text-ink mt-1">{value}</p>
             </div>
           ))}
@@ -251,7 +255,7 @@ export default function PayoutsPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-lg font-semibold text-ink">Withdraw funds</h3>
+              <h3 className="text-lg font-semibold text-ink">{t('modal.title')}</h3>
               <button type="button" onClick={() => setShowModal(false)} className="size-7 flex items-center justify-center rounded-lg text-ink-mute hover:bg-surface-alt transition-colors">
                 <X className="size-4" />
               </button>
@@ -259,12 +263,12 @@ export default function PayoutsPage() {
 
             <div className="flex flex-col gap-4">
               <div className="bg-jade-soft rounded-xl p-3.5 text-sm text-jade">
-                Available: <span className="font-mono font-semibold">{fmtIdr(available)}</span>
+                {t('modal.available', { amount: fmtIdr(available) })}
               </div>
 
               <div>
                 <label className="text-xs font-semibold uppercase tracking-wide text-ink-mute block mb-1.5">
-                  Withdrawal amount (IDR)
+                  {t('modal.amountLabel')}
                 </label>
                 <input
                   type="number"
@@ -276,25 +280,25 @@ export default function PayoutsPage() {
 
               <div className="bg-surface-alt rounded-xl p-3.5 text-xs text-ink-mute flex flex-col gap-1.5">
                 <div className="flex justify-between">
-                  <span>Destination</span>
+                  <span>{t('modal.destination')}</span>
                   <span className="font-semibold text-ink">BCA ****4821 · Wayan Sudana</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Estimated arrival</span>
+                  <span>{t('modal.estimatedArrival')}</span>
                   <span className="font-semibold text-ink">1–3 business days</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Minimum withdrawal</span>
+                  <span>{t('modal.minimumWithdrawal')}</span>
                   <span className="font-mono text-ink">{fmtIdr(MIN_WITHDRAWAL)}</span>
                 </div>
               </div>
 
               <div className="flex gap-3 mt-1">
                 <button type="button" onClick={() => setShowModal(false)} className="flex-1 h-10 rounded-xl border border-rule text-sm font-semibold text-ink-soft hover:bg-surface-alt transition-colors">
-                  Cancel
+                  {t('modal.cancel')}
                 </button>
                 <button type="button" onClick={handleWithdraw} className="flex-1 h-10 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep transition-colors">
-                  Confirm withdrawal
+                  {t('modal.confirm')}
                 </button>
               </div>
             </div>

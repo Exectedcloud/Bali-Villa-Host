@@ -73,9 +73,9 @@ export default function LandingPage() {
     <div className="min-h-screen bg-paper">
       <HostTopNav />
 
-      {/* Hero — animated entrance handled by HeroSection */}
-      <section className="pt-14 sm:pt-16 bg-gradient-to-br from-surface via-surface to-surface-alt">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-24 lg:py-32">
+      {/* Hero — full-bleed photo card with ken-burns */}
+      <section className="pt-14 sm:pt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-0">
           <HeroSection />
         </div>
       </section>
@@ -118,7 +118,7 @@ export default function LandingPage() {
 
       {/* Commission */}
       <ScrollReveal>
-        <section className="py-12 md:py-20 lg:py-28 border-t border-rule">
+        <section id="commission" className="py-12 md:py-20 lg:py-28 border-t border-rule">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
             <h2 className="font-display text-3xl sm:text-5xl font-medium text-jade leading-tight mb-6">
               Just 12% commission.
@@ -176,7 +176,7 @@ export default function LandingPage() {
 
       {/* FAQ */}
       <ScrollReveal>
-        <section className="py-12 md:py-20 border-t border-rule">
+        <section id="faq" className="py-12 md:py-20 border-t border-rule">
           <div className="max-w-2xl mx-auto px-4 sm:px-6">
             <h2 className="font-display text-3xl sm:text-4xl font-medium text-ink mb-12 text-center">
               Frequently asked questions
