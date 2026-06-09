@@ -5,31 +5,28 @@ import {
   LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
-import { TrendingUp, Star } from 'lucide-react';
+import { TrendingUp, Star, FlaskConical } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
-const TIME_RANGES = ['Last 30 days', 'Last 90 days', 'Last year', 'All time'];
-
-// ── Mock chart data ────────────────────────────────────────────────────────────
-
-const MONTHS = ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'];
+const MONTH_KEYS = ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'];
 
 const REVENUE_DATA = [
   15200000, 16800000, 15900000, 17200000, 18500000, 19800000,
   22400000, 21100000, 20300000, 23600000, 25900000, 27800000,
-].map((v, i) => ({ month: MONTHS[i], value: v }));
+].map((v, i) => ({ month: MONTH_KEYS[i], value: v }));
 
 const OCCUPANCY_DATA = [
   52, 68, 61, 55, 74, 80, 85, 79, 71, 77, 83, 81,
-].map((v, i) => ({ month: MONTHS[i], value: v }));
+].map((v, i) => ({ month: MONTH_KEYS[i], value: v }));
 
 const ADR_DATA = [
   3800000, 4200000, 4050000, 3950000, 4500000, 4800000,
   5200000, 5050000, 4900000, 5400000, 5700000, 6100000,
-].map((v, i) => ({ month: MONTHS[i], value: v }));
+].map((v, i) => ({ month: MONTH_KEYS[i], value: v }));
 
 const RATING_DATA = [
   4.6, 4.7, 4.6, 4.7, 4.8, 4.8, 4.9, 4.8, 4.9, 4.9, 5.0, 4.9,
-].map((v, i) => ({ month: MONTHS[i], value: v }));
+].map((v, i) => ({ month: MONTH_KEYS[i], value: v }));
 
 const SOURCE_DATA = [
   { name: 'Direct',   value: 45, color: '#1F6B5C' },
@@ -43,7 +40,7 @@ const TOP_VILLAS = [
   { name: 'Villa Sindhu Sanur',     bookings: 7,  revenueM: 168, rating: 9.2, occupancy: 65 },
 ];
 
-// ── Custom tooltips ────────────────────────────────────────────────────────────
+const TIME_RANGE_KEYS = ['last30', 'last90', 'lastYear', 'allTime'];
 
 function RpTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
@@ -95,8 +92,6 @@ function SourceTooltip({ active, payload }) {
   );
 }
 
-// ── ChartCard wrapper ──────────────────────────────────────────────────────────
-
 function ChartCard({ title, subtitle, children }) {
   return (
     <div className="bg-surface rounded-xl border border-rule shadow-sm p-5 flex flex-col gap-3">
@@ -111,10 +106,9 @@ function ChartCard({ title, subtitle, children }) {
 
 const AXIS_STYLE = { fontSize: 11, fill: '#8A7560' };
 
-// ── Page ───────────────────────────────────────────────────────────────────────
-
 export default function InsightsPage() {
-  const [range, setRange] = useState('Last year');
+  const t = useTranslations('insights');
+  const [range, setRange] = useState('lastYear');
 
   return (
     <div className="flex flex-col gap-6 max-w-6xl">
@@ -122,26 +116,30 @@ export default function InsightsPage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="font-display text-3xl font-medium text-ink">
-            Insights{' '}
-            <span className="font-sans font-normal text-xl text-ink-mute">数据分析</span>
-          </h1>
-          <p className="text-sm text-ink-mute mt-1">Performance across your 3 properties</p>
+          <h1 className="font-display text-3xl font-medium text-ink">{t('title')}</h1>
+          <p className="text-sm text-ink-mute mt-1">{t('subtitle', { count: 3 })}</p>
         </div>
-        <select
-          value={range}
-          onChange={(e) => setRange(e.target.value)}
-          className="h-9 pl-3 pr-8 text-sm border border-rule rounded-lg bg-surface text-ink focus:outline-none focus:ring-1 focus:ring-jade appearance-none"
-        >
-          {TIME_RANGES.map((r) => <option key={r}>{r}</option>)}
-        </select>
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-warn/10 border border-warn/20 text-xs text-warn font-medium">
+            <FlaskConical className="size-3.5 shrink-0" />
+            {t('sampleData')}
+          </div>
+          <select
+            value={range}
+            onChange={(e) => setRange(e.target.value)}
+            className="h-9 pl-3 pr-8 text-sm border border-rule rounded-lg bg-surface text-ink focus:outline-none focus:ring-1 focus:ring-jade appearance-none"
+          >
+            {TIME_RANGE_KEYS.map((key) => (
+              <option key={key} value={key}>{t(`timeRanges.${key}`)}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      {/* Charts grid — 1 col mobile, 2 cols lg+ */}
+      {/* Charts grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
 
-        {/* Revenue trend */}
-        <ChartCard title="Revenue trend" subtitle="Monthly gross revenue (IDR)">
+        <ChartCard title={t('charts.revenue')} subtitle={t('charts.revenueSubtitle')}>
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={REVENUE_DATA} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#D8CAB0" vertical={false} />
@@ -153,8 +151,7 @@ export default function InsightsPage() {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Occupancy */}
-        <ChartCard title="Occupancy rate" subtitle="Average across all 3 properties (%)">
+        <ChartCard title={t('charts.occupancy')} subtitle={t('charts.occupancySubtitle', { count: 3 })}>
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={OCCUPANCY_DATA} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#D8CAB0" vertical={false} />
@@ -166,18 +163,11 @@ export default function InsightsPage() {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Booking sources */}
-        <ChartCard title="Booking sources" subtitle="How guests found your properties">
+        <ChartCard title={t('charts.bookingSources')} subtitle={t('charts.bookingSourcesSubtitle')}>
           <div className="flex items-center gap-6">
             <ResponsiveContainer width={160} height={160}>
               <PieChart>
-                <Pie
-                  data={SOURCE_DATA}
-                  cx="50%" cy="50%"
-                  innerRadius={50} outerRadius={75}
-                  paddingAngle={3}
-                  dataKey="value"
-                >
+                <Pie data={SOURCE_DATA} cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={3} dataKey="value">
                   {SOURCE_DATA.map((entry) => (
                     <Cell key={entry.name} fill={entry.color} />
                   ))}
@@ -197,8 +187,7 @@ export default function InsightsPage() {
           </div>
         </ChartCard>
 
-        {/* Average daily rate */}
-        <ChartCard title="Average daily rate" subtitle="Per-night revenue per occupied night (IDR)">
+        <ChartCard title={t('charts.adr')} subtitle={t('charts.adrSubtitle')}>
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={ADR_DATA} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#D8CAB0" vertical={false} />
@@ -210,9 +199,8 @@ export default function InsightsPage() {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Review score — spans full width */}
         <div className="lg:col-span-2">
-          <ChartCard title="Review score trend" subtitle="Average guest rating across properties (out of 5.0)">
+          <ChartCard title={t('charts.reviewScore')} subtitle={t('charts.reviewScoreSubtitle')}>
             <ResponsiveContainer width="100%" height={180}>
               <LineChart data={RATING_DATA} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#D8CAB0" vertical={false} />
@@ -230,8 +218,8 @@ export default function InsightsPage() {
       <div className="bg-surface rounded-xl border border-rule shadow-sm overflow-hidden">
         <div className="px-5 py-4 border-b border-rule flex items-center gap-2">
           <TrendingUp className="size-4 text-jade" />
-          <h2 className="text-sm font-semibold text-ink">Top performing properties</h2>
-          <span className="text-xs text-ink-mute ml-1">— {range}</span>
+          <h2 className="text-sm font-semibold text-ink">{t('topProperties')}</h2>
+          <span className="text-xs text-ink-mute ml-1">— {t(`timeRanges.${range}`)}</span>
         </div>
 
         {/* Mobile cards */}
@@ -254,9 +242,15 @@ export default function InsightsPage() {
         <table className="hidden md:table w-full text-sm">
           <thead>
             <tr className="border-b border-rule bg-surface-alt/50">
-              {['Villa', 'Bookings', 'Revenue', 'Avg rating', 'Occupancy'].map((h, i) => (
-                <th key={h} className={`px-5 py-3 text-xs font-semibold uppercase tracking-wide text-ink-mute ${i === 0 ? 'text-left' : 'text-right'}`}>
-                  {h}
+              {[
+                { key: 'villa',     label: t('table.villa') },
+                { key: 'bookings',  label: t('table.bookings') },
+                { key: 'revenue',   label: t('table.revenue') },
+                { key: 'avgRating', label: t('table.avgRating') },
+                { key: 'occupancy', label: t('table.occupancy') },
+              ].map(({ key, label }, i) => (
+                <th key={key} className={`px-5 py-3 text-xs font-semibold uppercase tracking-wide text-ink-mute ${i === 0 ? 'text-left' : 'text-right'}`}>
+                  {label}
                 </th>
               ))}
             </tr>

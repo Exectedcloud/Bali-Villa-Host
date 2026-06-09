@@ -26,7 +26,7 @@ export function Step4Form({ data, patch, router }) {
     }
   }
 
-  const previewPhoto = data.videoUrl ? null : 'https://images.unsplash.com/photo-1582610116397-edb318620f90?w=400&q=80';
+  const previewPhoto = data.videoUrl ? null : '/Villa1.jpg';
   const previewTitle = data.title || 'Your villa name';
   const previewLocation = [data.city, data.region].filter(Boolean).join(', ') || 'Bali, Indonesia';
   const previewPrice = data.basePriceIdr

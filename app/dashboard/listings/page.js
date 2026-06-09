@@ -8,9 +8,10 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import { api } from '@/lib/api-client';
+import { normalizeVillaPhotos } from '@/lib/mock-data';
 
-const FILTERS = ['All', 'Published', 'Pending Review', 'Paused', 'Draft'];
 const BADGE_CLS = {
   published:      'bg-success/10 text-success',
   pending_review: 'bg-jade-soft text-jade',
@@ -19,7 +20,8 @@ const BADGE_CLS = {
 };
 
 export default function ListingsPage() {
-  const [filter, setFilter] = useState('All');
+  const t = useTranslations('listings');
+  const [filter, setFilter] = useState('all');
   const [paused, setPaused] = useState(new Set());
 
   const { data, isPending } = useQuery({
@@ -28,16 +30,23 @@ export default function ListingsPage() {
   });
   const villas = data?.villas ?? [];
 
+  const FILTERS = [
+    { key: 'all',            label: t('filters.all') },
+    { key: 'published',      label: t('filters.published') },
+    { key: 'pending_review', label: t('filters.pendingReview') },
+    { key: 'paused',         label: t('filters.paused') },
+    { key: 'draft',          label: t('filters.draft') },
+  ];
+
   function statusOf(v) {
     if (paused.has(v.id)) return 'paused';
     return v.status || 'published';
   }
 
-  const enriched = villas.map((v) => ({ ...v, effectiveStatus: statusOf(v) }));
-  const filterKey = filter === 'All' ? null : filter.toLowerCase().replace(/\s+/g, '_');
-  const shown = filterKey === null
+  const enriched = villas.map((v, i) => ({ ...normalizeVillaPhotos(v, i), effectiveStatus: statusOf(v) }));
+  const shown = filter === 'all'
     ? enriched
-    : enriched.filter((v) => v.effectiveStatus === filterKey);
+    : enriched.filter((v) => v.effectiveStatus === filter);
 
   function togglePause(id) {
     setPaused((prev) => {
@@ -52,40 +61,37 @@ export default function ListingsPage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="font-display text-3xl font-medium text-ink">
-            Your listings{' '}
-            <span className="font-sans font-normal text-xl text-ink-mute">您的房源</span>
-          </h1>
-          <p className="text-sm text-ink-mute mt-1">{villas.length} properties on BaliVilla</p>
+          <h1 className="font-display text-3xl font-medium text-ink">{t('title')}</h1>
+          <p className="text-sm text-ink-mute mt-1">{t('subtitle', { count: villas.length })}</p>
         </div>
         <Link
           href="/onboarding"
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep transition-colors shrink-0"
         >
           <Plus className="size-4" />
-          Add another listing
+          {t('addListing')}
         </Link>
       </div>
 
       {/* Filter pills */}
       <div className="flex gap-2 flex-wrap">
-        {FILTERS.map((tab) => {
-          const count = tab === 'All'
+        {FILTERS.map(({ key, label }) => {
+          const count = key === 'all'
             ? enriched.length
-            : enriched.filter((v) => v.effectiveStatus === tab.toLowerCase().replace(/\s+/g, '_')).length;
+            : enriched.filter((v) => v.effectiveStatus === key).length;
           return (
             <button
-              key={tab}
+              key={key}
               type="button"
-              onClick={() => setFilter(tab)}
+              onClick={() => setFilter(key)}
               className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-                filter === tab
+                filter === key
                   ? 'bg-jade text-white border-jade'
                   : 'bg-surface text-ink-soft border-rule hover:border-jade/50 hover:text-ink'
               }`}
             >
-              {tab}
-              <span className={`ml-1.5 text-xs ${filter === tab ? 'text-white/70' : 'text-ink-mute'}`}>
+              {label}
+              <span className={`ml-1.5 text-xs ${filter === key ? 'text-white/70' : 'text-ink-mute'}`}>
                 {count}
               </span>
             </button>
@@ -111,14 +117,14 @@ export default function ListingsPage() {
           <div className="size-16 rounded-2xl bg-jade-soft flex items-center justify-center mx-auto mb-5">
             <Home className="size-8 text-jade" />
           </div>
-          <h2 className="font-display text-2xl font-medium text-ink mb-2">You have no listings yet</h2>
-          <p className="text-sm text-ink-mute mb-8 max-w-sm mx-auto">List your first villa and start welcoming Chinese guests in under 30 minutes.</p>
+          <h2 className="font-display text-2xl font-medium text-ink mb-2">{t('empty.title')}</h2>
+          <p className="text-sm text-ink-mute mb-8 max-w-sm mx-auto">{t('empty.desc')}</p>
           <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: 0.08, ease: 'linear' }} className="inline-block">
             <Link
               href="/onboarding"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-jade hover:bg-jade-deep text-white text-sm font-semibold transition-colors"
             >
-              Create your first listing
+              {t('empty.cta')}
               <ArrowRight className="size-4" />
             </Link>
           </motion.div>
@@ -133,8 +139,8 @@ export default function ListingsPage() {
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="py-20 text-center"
         >
-          <p className="text-base font-medium text-ink mb-1">No {filter.toLowerCase()} listings</p>
-          <p className="text-sm text-ink-mute">Adjust your filter or add a new listing.</p>
+          <p className="text-base font-medium text-ink mb-1">{t('noResults.title', { filter })}</p>
+          <p className="text-sm text-ink-mute">{t('noResults.desc')}</p>
         </motion.div>
       )}
 
@@ -151,6 +157,7 @@ export default function ListingsPage() {
 }
 
 function ListingCard({ villa, onTogglePause }) {
+  const t = useTranslations('listings');
   const { effectiveStatus: status } = villa;
   const isPaused = status === 'paused';
   const bookings = Math.round((villa.reviewCount ?? 0) * 0.62);
@@ -174,7 +181,7 @@ function ListingCard({ villa, onTogglePause }) {
           }`}
         />
         <span className={`absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full bg-surface/90 ${BADGE_CLS[status] ?? ''}`}>
-          {status.charAt(0).toUpperCase() + status.slice(1)}
+          {t(`filters.${status === 'pending_review' ? 'pendingReview' : status === 'published' ? 'published' : status === 'paused' ? 'paused' : 'draft'}`)}
         </span>
         {villa.instantBook && status === 'published' && (
           <span className="absolute top-3 left-3 text-xs font-semibold px-2 py-1 rounded-full bg-jade text-white">
@@ -189,6 +196,9 @@ function ListingCard({ villa, onTogglePause }) {
           <h2 className="font-display text-lg font-medium text-ink leading-snug line-clamp-1">
             {villa.titleEn}
           </h2>
+          {villa.titleZh && (
+            <p className="text-xs text-ink-mute mt-0.5 truncate">{villa.titleZh}</p>
+          )}
           <p className="text-xs text-mist mt-0.5 truncate">{villa.location}</p>
         </div>
 
@@ -196,7 +206,7 @@ function ListingCard({ villa, onTogglePause }) {
         <div className="flex items-center gap-4 text-xs text-ink-mute">
           <span className="flex items-center gap-1">
             <BookOpen className="size-3.5 shrink-0" />
-            {bookings} bookings
+            {t('card.bookings', { count: bookings })}
           </span>
           <span className="flex items-center gap-1">
             <Star className="size-3 fill-gold text-gold shrink-0" />
@@ -204,7 +214,7 @@ function ListingCard({ villa, onTogglePause }) {
           </span>
           <span className="flex items-center gap-1">
             <BarChart3 className="size-3.5 shrink-0" />
-            {occupancy}% occ.
+            {t('card.occupancy', { pct: occupancy })}
           </span>
         </div>
 
@@ -215,14 +225,14 @@ function ListingCard({ villa, onTogglePause }) {
           <div className="flex items-center gap-0.5">
             <Link
               href={`/dashboard/listings/${villa.id}`}
-              title="Settings"
+              title={t('card.settings')}
               className="size-8 rounded-lg flex items-center justify-center text-ink-mute hover:bg-jade-soft hover:text-jade transition-colors"
             >
               <Pencil className="size-4" />
             </Link>
             <button
               type="button"
-              title={isPaused ? 'Unpause listing' : 'Pause listing'}
+              title={isPaused ? t('card.unpause') : t('card.pause')}
               onClick={() => onTogglePause(villa.id)}
               className="size-8 rounded-lg flex items-center justify-center text-ink-mute hover:bg-jade-soft hover:text-jade transition-colors"
             >
@@ -232,14 +242,14 @@ function ListingCard({ villa, onTogglePause }) {
               href={`http://localhost:3000/villa/${villa.slug}`}
               target="_blank"
               rel="noreferrer"
-              title="Preview as guest"
+              title={t('card.previewAsGuest')}
               className="size-8 rounded-lg flex items-center justify-center text-ink-mute hover:bg-jade-soft hover:text-jade transition-colors"
             >
               <Eye className="size-4" />
             </a>
             <button
               type="button"
-              title="Duplicate"
+              title={t('card.duplicate')}
               className="size-8 rounded-lg flex items-center justify-center text-ink-mute hover:bg-jade-soft hover:text-jade transition-colors"
             >
               <Copy className="size-4" />
@@ -247,7 +257,7 @@ function ListingCard({ villa, onTogglePause }) {
           </div>
           <button
             type="button"
-            title="Delete listing"
+            title={t('card.deleteListing')}
             className="size-8 rounded-lg flex items-center justify-center text-ink-mute hover:bg-danger/10 hover:text-danger transition-colors"
           >
             <Trash2 className="size-4" />

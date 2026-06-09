@@ -4,9 +4,12 @@ import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { api, ApiError } from '@/lib/api-client';
 
 function VerifyEmailContent() {
+  const t = useTranslations('auth.verifyEmail');
+  const tNav = useTranslations('nav');
   const searchParams = useSearchParams();
   const [state, setState] = useState('loading'); // 'loading' | 'success' | 'error'
   const [errorMsg, setErrorMsg] = useState('');
@@ -37,22 +40,22 @@ function VerifyEmailContent() {
     <div className="min-h-screen bg-paper flex flex-col items-center justify-center px-4 py-12">
       <Link href="/" className="flex items-center gap-2.5 mb-8">
         <Image src="/BaliVillalogo.png" alt="BaliVilla" width={160} height={40} className="h-10 w-auto" priority />
-        <span className="text-sm font-medium text-ink-mute">for Hosts</span>
+        <span className="text-sm font-medium text-ink-mute">{tNav('forHosts')}</span>
       </Link>
 
       <div className="w-full max-w-sm text-center">
         {state === 'loading' && (
           <>
             <div className="size-12 rounded-full border-4 border-jade border-t-transparent animate-spin mx-auto mb-4" />
-            <p className="text-ink-soft text-sm">Verifying your email…</p>
+            <p className="text-ink-soft text-sm">{t('loading')}</p>
           </>
         )}
 
         {state === 'success' && (
           <>
             <div className="text-5xl mb-5">✅</div>
-            <h1 className="font-display text-2xl font-medium text-ink mb-2">Email verified!</h1>
-            <p className="text-sm text-ink-mute mb-6">Your host account is ready. Log in to get started.</p>
+            <h1 className="font-display text-2xl font-medium text-ink mb-2">{t('success.title')}</h1>
+            <p className="text-sm text-ink-mute mb-6">{t('success.desc')}</p>
             <div className="bg-surface rounded-2xl border border-rule shadow-md p-6 mb-6">
               <p className="text-sm text-ink-soft leading-relaxed">
                 Your email has been verified. You can now log in to your host account and complete your listing setup.
@@ -62,7 +65,7 @@ function VerifyEmailContent() {
               href="/login"
               className="block w-full py-3.5 rounded-xl bg-jade hover:bg-jade-deep text-white font-semibold text-sm text-center transition-colors"
             >
-              Log in to host dashboard
+              {t('success.login')}
             </Link>
           </>
         )}
@@ -70,7 +73,7 @@ function VerifyEmailContent() {
         {state === 'error' && (
           <>
             <div className="text-5xl mb-5">❌</div>
-            <h1 className="font-display text-2xl font-medium text-ink mb-2">Verification failed</h1>
+            <h1 className="font-display text-2xl font-medium text-ink mb-2">{t('error.title')}</h1>
             <div className="bg-surface rounded-2xl border border-rule shadow-md p-6 mb-6">
               <p className="text-sm text-danger leading-relaxed">{errorMsg}</p>
             </div>
@@ -78,7 +81,7 @@ function VerifyEmailContent() {
               href="/login"
               className="text-jade text-sm font-medium hover:text-jade-deep underline underline-offset-2 transition-colors"
             >
-              Back to log in
+              {t('backToLogin')}
             </Link>
           </>
         )}

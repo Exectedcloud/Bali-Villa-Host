@@ -1,0 +1,561 @@
+{
+  "nav": {
+    "dashboard": "Dasbor",
+    "listings": "Properti",
+    "calendar": "Kalender",
+    "reservations": "Reservasi",
+    "messages": "Pesan",
+    "insights": "Wawasan",
+    "payouts": "Pembayaran",
+    "profile": "Profil",
+    "forHosts": "untuk Tuan Rumah",
+    "previewPublicSite": "Pratinjau situs publik",
+    "logOut": "Keluar",
+    "signingOut": "Sedang keluar…",
+    "hostSince": "Tuan rumah sejak {year}"
+  },
+  "common": {
+    "save": "Simpan perubahan",
+    "saving": "Menyimpan…",
+    "cancel": "Batal",
+    "approve": "Setujui",
+    "decline": "Tolak",
+    "view": "Lihat",
+    "edit": "Edit",
+    "delete": "Hapus",
+    "viewAll": "Lihat semua",
+    "nights": "{count} malam",
+    "guests": "{count} tamu"
+  },
+  "auth": {
+    "login": {
+      "title": "Selamat datang kembali",
+      "subtitle": "Masuk ke akun tuan rumah Anda",
+      "email": "Alamat email",
+      "password": "Kata sandi",
+      "forgotPassword": "Lupa kata sandi?",
+      "submit": "Masuk",
+      "submitting": "Sedang masuk…",
+      "wechat": "Lanjutkan dengan WeChat",
+      "noAccount": "Belum punya akun tuan rumah?",
+      "signUp": "Daftar",
+      "guestLink": "Anda seorang tamu?",
+      "visitBaliVilla": "Kunjungi BaliVilla",
+      "error": {
+        "invalidCredentials": "Email atau kata sandi salah",
+        "notAHost": "Akun ini tidak terdaftar sebagai tuan rumah. Daftar sebagai tuan rumah terlebih dahulu",
+        "failed": "Login gagal. Silakan coba lagi.",
+        "emailNotVerified": "Harap verifikasi email Anda sebelum masuk."
+      },
+      "resendVerification": "Kirim ulang email verifikasi",
+      "resendSent": "Email verifikasi terkirim — periksa kotak masuk Anda."
+    },
+    "signup": {
+      "title": "Jadilah tuan rumah",
+      "subtitle": "Buat akun tuan rumah gratis Anda",
+      "firstName": "Nama depan",
+      "lastName": "Nama belakang",
+      "email": "Alamat email",
+      "phone": "Nomor telepon (opsional)",
+      "password": "Kata sandi",
+      "confirmPassword": "Konfirmasi kata sandi",
+      "submit": "Buat akun",
+      "submitting": "Membuat akun…",
+      "hasAccount": "Sudah punya akun tuan rumah?",
+      "logIn": "Masuk",
+      "success": {
+        "title": "Periksa email Anda",
+        "desc": "Kami telah mengirimkan tautan verifikasi ke {email}",
+        "loginNow": "Masuk sekarang",
+        "resend": "Kirim ulang email"
+      }
+    },
+    "forgotPassword": {
+      "title": "Atur ulang kata sandi",
+      "subtitle": "Masukkan email Anda dan kami akan mengirimkan tautan pengaturan ulang.",
+      "email": "Alamat email",
+      "emailPlaceholder": "anda@contoh.com",
+      "submit": "Kirim tautan pengaturan ulang",
+      "submitting": "Mengirim…",
+      "success": {
+        "sent": "Tautan pengaturan ulang dikirim ke {email}",
+        "tryAgain": "Coba lagi"
+      },
+      "backToLogin": "Kembali ke login"
+    },
+    "verifyEmail": {
+      "loading": "Memverifikasi email Anda…",
+      "success": {
+        "title": "Email terverifikasi!",
+        "desc": "Akun tuan rumah Anda siap. Masuk untuk memulai.",
+        "login": "Masuk ke dasbor tuan rumah"
+      },
+      "error": {
+        "title": "Verifikasi gagal"
+      },
+      "backToLogin": "Kembali ke login"
+    }
+  },
+  "dashboard": {
+    "greeting": {
+      "welcome": "Selamat datang kembali.",
+      "firstVilla": "Selamat datang, {name}. Mari daftarkan villa pertama Anda.",
+      "checkIns": "Selamat datang kembali, {name}. Anda memiliki {count} check-in minggu ini.",
+      "fillDates": "Selamat datang kembali, {name}. Siap mengisi lebih banyak tanggal?"
+    },
+    "viewListings": "Lihat properti saya",
+    "todayCheckIns": "Check-in hari ini",
+    "todayCheckOuts": "Check-out hari ini",
+    "noneToday": "Tidak ada hari ini",
+    "guestsCount": "{count} tamu",
+    "actionItems": "Tindakan yang diperlukan",
+    "actionItemsDesc": "Tugas yang membutuhkan perhatian Anda",
+    "allCaughtUp": "Semua sudah beres!",
+    "recentBookings": "Reservasi terbaru",
+    "noBookingsYet": "Belum ada reservasi",
+    "metric": {
+      "bookingsThisMonth": "Reservasi bulan ini",
+      "payoutThisMonth": "Pembayaran bulan ini",
+      "avgRating": "Rating rata-rata",
+      "totalBookings": "Total reservasi",
+      "fromBookings": "dari {count} reservasi"
+    },
+    "alert": {
+      "pendingBookings": "{count} reservasi menunggu persetujuan",
+      "unreadMessages": "{count} pesan belum dibaca",
+      "review": "Tinjau",
+      "reply": "Balas",
+      "updateCalendar": "Perbarui ketersediaan kalender"
+    },
+    "status": {
+      "confirmed": "dikonfirmasi",
+      "inHouse": "menginap",
+      "pendingApproval": "menunggu persetujuan",
+      "completed": "selesai",
+      "cancelled": "dibatalkan",
+      "draft": "draf"
+    }
+  },
+  "listings": {
+    "title": "Properti Anda",
+    "subtitle": "{count} properti di BaliVilla",
+    "addListing": "Tambah properti lain",
+    "filters": {
+      "all": "Semua",
+      "published": "Diterbitkan",
+      "pendingReview": "Ditinjau",
+      "paused": "Dijeda",
+      "draft": "Draf"
+    },
+    "empty": {
+      "title": "Anda belum memiliki properti",
+      "desc": "Daftarkan villa pertama Anda dan mulai menyambut tamu Tiongkok dalam 30 menit.",
+      "cta": "Buat properti pertama Anda"
+    },
+    "noResults": {
+      "title": "Tidak ada properti {filter}",
+      "desc": "Sesuaikan filter atau tambahkan properti baru."
+    },
+    "card": {
+      "bookings": "{count} reservasi",
+      "occupancy": "{pct}% hunian",
+      "settings": "Pengaturan",
+      "pause": "Jeda properti",
+      "unpause": "Aktifkan kembali",
+      "previewAsGuest": "Pratinjau sebagai tamu",
+      "duplicate": "Duplikat",
+      "deleteListing": "Hapus properti"
+    }
+  },
+  "listingSettings": {
+    "title": "Pengaturan properti",
+    "subtitle": "Pengaturan harga, aturan, dan ketersediaan",
+    "pricing": {
+      "title": "Harga",
+      "nightlyPrice": "Harga per malam (IDR)",
+      "cleaningFee": "Biaya kebersihan (opsional)",
+      "weekendPremium": "Premi akhir pekan",
+      "weekendPremiumHint": "Berlaku pada malam Jumat dan Sabtu",
+      "noPremium": "Tanpa premi",
+      "premium50": "+50%",
+      "priceRequired": "Harga per malam wajib diisi"
+    },
+    "stayLength": {
+      "title": "Lama menginap",
+      "minNights": "Minimum malam",
+      "maxNights": "Maksimum malam"
+    },
+    "cancellation": {
+      "title": "Kebijakan pembatalan",
+      "flexible": "Fleksibel",
+      "flexibleDesc": "Pengembalian dana penuh hingga 24 jam sebelum check-in",
+      "moderate": "Sedang",
+      "moderateDesc": "Pengembalian dana penuh lebih dari 5 hari sebelumnya; 50% kurang dari 5 hari",
+      "strict": "Ketat",
+      "strictDesc": "Pengembalian dana penuh dalam 48 jam setelah pemesanan (minimal 14 hari sebelum check-in)"
+    },
+    "houseRules": {
+      "title": "Aturan rumah",
+      "no_smoking": "Dilarang merokok",
+      "no_parties": "Dilarang mengadakan pesta atau acara",
+      "no_pets": "Dilarang membawa hewan peliharaan",
+      "children_ok": "Anak-anak diperbolehkan",
+      "quiet_hours": "Jam tenang setelah pukul 22.00",
+      "register_guests": "Semua tamu harus didaftarkan"
+    },
+    "instantBook": {
+      "title": "Pemesanan Instan",
+      "desc": "Jika diaktifkan, tamu dapat memesan tanpa persetujuan Anda. Jika dinonaktifkan, Anda akan meninjau setiap permintaan terlebih dahulu."
+    },
+    "save": "Simpan perubahan",
+    "saving": "Menyimpan…"
+  },
+  "reservations": {
+    "title": "Reservasi",
+    "subtitle": "{count} reservasi di properti Anda",
+    "searchPlaceholder": "Cari tamu atau villa…",
+    "showing": "Menampilkan {shown} dari {total} reservasi",
+    "tabs": {
+      "all": "Semua",
+      "pending": "Menunggu",
+      "upcoming": "Mendatang",
+      "inHouse": "Menginap",
+      "completed": "Selesai",
+      "cancelled": "Dibatalkan"
+    },
+    "status": {
+      "confirmed": "Dikonfirmasi",
+      "inHouse": "Menginap",
+      "completed": "Selesai",
+      "pendingApproval": "Menunggu",
+      "cancelled": "Dibatalkan"
+    },
+    "table": {
+      "guest": "Tamu",
+      "villa": "Villa",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "nights": "Malam",
+      "payout": "Pembayaran",
+      "status": "Status"
+    },
+    "approve": "Setujui",
+    "decline": "Tolak",
+    "view": "Lihat",
+    "viewDetails": "Lihat detail",
+    "empty": {
+      "title": "Tidak ada reservasi ditemukan",
+      "desc": "Coba sesuaikan filter atau pencarian."
+    },
+    "pagination": {
+      "page": "Halaman {page} dari {total}"
+    },
+    "approvedToast": "Reservasi disetujui.",
+    "declinedToast": "Reservasi ditolak.",
+    "errorApprove": "Tidak dapat menyetujui reservasi.",
+    "errorDecline": "Tidak dapat menolak reservasi."
+  },
+  "reservationDetail": {
+    "title": "Detail Reservasi",
+    "status": {
+      "confirmed": "Dikonfirmasi",
+      "inHouse": "Menginap",
+      "completed": "Selesai",
+      "pendingApproval": "Menunggu persetujuan",
+      "pendingPayment": "Menunggu pembayaran",
+      "cancelled": "Dibatalkan"
+    },
+    "timeline": {
+      "bookingCreated": "Reservasi dibuat",
+      "paymentConfirmed": "Pembayaran dikonfirmasi",
+      "checkInDue": "Jadwal check-in",
+      "checkedIn": "Sudah check-in",
+      "checkedOut": "Sudah check-out",
+      "reviewReceived": "Ulasan diterima",
+      "payoutSent": "Pembayaran dikirim"
+    },
+    "guest": "Tamu",
+    "stayDetails": "Detail menginap",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "nights": "Malam",
+    "guests": "Tamu",
+    "paymentBreakdown": "Rincian pembayaran",
+    "specialRequests": "Permintaan khusus",
+    "actions": {
+      "approveBooking": "Setujui reservasi",
+      "declineBooking": "Tolak reservasi",
+      "markCheckIn": "Tandai check-in",
+      "messageGuest": "Kirim pesan ke tamu",
+      "cancelBooking": "Batalkan reservasi",
+      "markCheckOut": "Tandai check-out",
+      "reportIssue": "Laporkan masalah",
+      "viewReview": "Lihat ulasan"
+    },
+    "back": "Kembali",
+    "notFound": "Reservasi tidak ditemukan",
+    "backToReservations": "← Kembali ke reservasi",
+    "approving": "Menyetujui…",
+    "declining": "Menolak…",
+    "actionsTitle": "Tindakan",
+    "bookingTimeline": "Linimasa reservasi",
+    "yourPayout": "Pembayaran Anda",
+    "nightlyRateLine": "Tarif per malam × {nights} malam",
+    "cleaningFee": "Biaya kebersihan",
+    "serviceFee": "Biaya layanan",
+    "totalIdr": "Total (IDR)",
+    "guestPaidCny": "Tamu membayar (CNY)",
+    "commission": "Komisi BaliVilla (14%)",
+    "toast": {
+      "markCheckIn": "Check-in ditandai",
+      "cancel": "Reservasi dibatalkan",
+      "markCheckOut": "Check-out ditandai — terima kasih telah menginap!",
+      "reportIssue": "Tim dukungan telah diberitahu",
+      "viewReview": "Fitur ulasan segera hadir",
+      "approved": "Reservasi disetujui",
+      "declined": "Reservasi ditolak"
+    }
+  },
+  "messages": {
+    "title": "Pesan",
+    "searchPlaceholder": "Cari…",
+    "noConversations": "Tidak ada percakapan ditemukan.",
+    "selectConversation": "Pilih percakapan",
+    "quickReplies": "Balasan cepat",
+    "messagePlaceholder": "Ketik pesan… (Enter untuk kirim, Shift+Enter untuk baris baru)",
+    "failedToSend": "Gagal mengirim pesan.",
+    "attachmentSoon": "Lampiran file segera hadir",
+    "feedbackGood": "Terima kasih atas masukan Anda!",
+    "feedbackBad": "Ditandai untuk ditinjau — kami akan meningkatkan terjemahan ini",
+    "quickReply": {
+      "checkIn": "Instruksi check-in",
+      "directions": "Petunjuk dari bandara",
+      "wifi": "Kata sandi Wifi",
+      "houseRules": "Pengingat aturan rumah"
+    }
+  },
+  "calendar": {
+    "title": "Ketersediaan & Harga",
+    "subtitle": "Klik tanggal untuk mengatur harga atau memblokir. Seret untuk memilih rentang.",
+    "allVillas": "Semua villa ({count})",
+    "today": "Hari ini",
+    "legend": {
+      "booked": "Dipesan",
+      "pending": "Menunggu persetujuan",
+      "blocked": "Diblokir",
+      "available": "Tersedia",
+      "selected": "Dipilih"
+    },
+    "panel": {
+      "bookingDetails": "Detail reservasi",
+      "pendingApproval": "Menunggu persetujuan",
+      "daysSelected": "{count} hari dipilih",
+      "dateDetails": "Detail tanggal",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "totalCharged": "Total dibebankan",
+      "yourPayout": "Pembayaran Anda",
+      "pricePerNight": "Harga per malam (IDR)",
+      "save": "Simpan",
+      "blockDate": "Blokir tanggal ini",
+      "blockDates": "Blokir tanggal-tanggal ini"
+    },
+    "showing": "Menampilkan {count} properti · {days} hari",
+    "seasonalRules": {
+      "title": "Aturan harga musiman",
+      "desc": "Kenaikan harga diterapkan secara otomatis pada semua {count} properti selama periode puncak",
+      "addRule": "Tambah aturan",
+      "noRules": "Belum ada aturan.",
+      "ruleEditorSoon": "Editor aturan segera hadir"
+    },
+    "toast": {
+      "approved": "Reservasi disetujui.",
+      "declined": "Reservasi ditolak.",
+      "errorApprove": "Tidak dapat menyetujui reservasi.",
+      "errorDecline": "Tidak dapat menolak reservasi.",
+      "priceSaved": "Harga disimpan: Rp {price} / malam",
+      "datesBlocked": "Tanggal diblokir",
+      "ruleRemoved": "Aturan dihapus"
+    }
+  },
+  "insights": {
+    "title": "Wawasan",
+    "subtitle": "Kinerja di {count} properti Anda",
+    "sampleData": "Data sampel — analitik langsung segera hadir",
+    "charts": {
+      "revenue": "Tren pendapatan",
+      "revenueSubtitle": "Pendapatan kotor bulanan (IDR)",
+      "occupancy": "Tingkat hunian",
+      "occupancySubtitle": "Rata-rata di semua {count} properti (%)",
+      "bookingSources": "Sumber reservasi",
+      "bookingSourcesSubtitle": "Bagaimana tamu menemukan properti Anda",
+      "adr": "Tarif harian rata-rata",
+      "adrSubtitle": "Pendapatan per malam per malam yang ditempati (IDR)",
+      "reviewScore": "Tren skor ulasan",
+      "reviewScoreSubtitle": "Rating tamu rata-rata di semua properti (dari 5.0)"
+    },
+    "topProperties": "Properti dengan kinerja terbaik",
+    "table": {
+      "villa": "Villa",
+      "bookings": "Reservasi",
+      "revenue": "Pendapatan",
+      "avgRating": "Rating rata-rata",
+      "occupancy": "Hunian"
+    },
+    "timeRanges": {
+      "last30": "30 hari terakhir",
+      "last90": "90 hari terakhir",
+      "lastYear": "Tahun lalu",
+      "allTime": "Semua waktu"
+    }
+  },
+  "payouts": {
+    "title": "Pembayaran",
+    "subtitle": "Penghasilan dari {count} properti Anda — dibayarkan ke {account}",
+    "balance": {
+      "available": "Saldo tersedia",
+      "pending": "Saldo tertunda",
+      "upcoming": "Penghasilan mendatang",
+      "readyToWithdraw": "Siap dicairkan",
+      "bookingsOnHold": "Reservasi masih dalam penahanan 24 jam",
+      "fromFutureBookings": "Dari reservasi masa depan yang dikonfirmasi"
+    },
+    "withdrawNow": "Cairkan sekarang",
+    "airwallexNote": "Pembayaran diproses melalui Airwallex dan diselesaikan ke rekening bank Indonesia terdaftar Anda dalam IDR dalam 24 jam setelah check-out tamu. Pencairan langsung akan diaktifkan setelah pemrosesan pembayaran sepenuhnya dikonfigurasi.",
+    "payoutHistory": "Riwayat pembayaran",
+    "payoutsOnRecord": "{count} pembayaran tercatat",
+    "status": {
+      "completed": "Selesai",
+      "pending": "Menunggu",
+      "failed": "Gagal"
+    },
+    "bankingInfo": "Informasi bank",
+    "bankingInfoDesc": "Tujuan pembayaran Anda",
+    "editBankingInfo": "Edit info bank",
+    "bankFields": {
+      "bankName": "Nama bank",
+      "accountHolder": "Pemegang rekening",
+      "accountNumber": "Nomor rekening",
+      "swift": "SWIFT / BIC",
+      "currency": "Mata uang pembayaran",
+      "schedule": "Jadwal pembayaran"
+    },
+    "modal": {
+      "title": "Cairkan dana",
+      "available": "Tersedia: {amount}",
+      "amountLabel": "Jumlah pencairan (IDR)",
+      "destination": "Tujuan",
+      "estimatedArrival": "Perkiraan tiba",
+      "minimumWithdrawal": "Minimum pencairan",
+      "cancel": "Batal",
+      "confirm": "Konfirmasi pencairan"
+    },
+    "table": {
+      "date": "Tanggal",
+      "amount": "Jumlah",
+      "method": "Metode",
+      "status": "Status",
+      "reference": "Referensi"
+    },
+    "receipt": "Kuitansi",
+    "toast": {
+      "initiated": "Pencairan {amount} dimulai — tiba dalam 1–3 hari kerja",
+      "errorMin": "Minimum pencairan adalah {amount}",
+      "errorExceeds": "Jumlah melebihi saldo tersedia",
+      "receiptSoon": "Unduhan kuitansi segera hadir",
+      "bankEditNote": "Verifikasi ulang diperlukan — periksa email Anda untuk melanjutkan"
+    }
+  },
+  "profile": {
+    "yourProfile": "Profil Anda",
+    "hostingSince": "Tuan rumah sejak {year} · {rate}% tingkat respons",
+    "tabs": {
+      "personalInfo": "Info pribadi",
+      "hostingPrefs": "Preferensi hosting",
+      "notifications": "Notifikasi",
+      "security": "Keamanan"
+    },
+    "personal": {
+      "profilePhoto": "Foto profil",
+      "uploadPhoto": "Unggah foto baru",
+      "photoHint": "JPG atau PNG · Maks 4 MB · Minimum 400×400 px",
+      "chooseFile": "Pilih file",
+      "displayName": "Nama tampilan",
+      "visibleToGuests": "(terlihat oleh tamu)",
+      "bio": "Bio",
+      "charCount": "{count} / 500 karakter",
+      "languagesSpoken": "Bahasa yang dikuasai",
+      "email": "Email",
+      "readOnly": "(hanya baca)",
+      "phone": "Nomor telepon",
+      "savedToast": "Profil diperbarui"
+    },
+    "prefs": {
+      "autoReply": "Balas otomatis untuk pertanyaan baru",
+      "autoReplyDesc": "Tamu menerima pesan ini secara instan saat membuat pertanyaan",
+      "responseTimeGoal": "Target waktu respons",
+      "responseTimeHint": "Ditampilkan di properti Anda — tingkat respons lebih cepat meningkatkan peringkat pencarian",
+      "available": "Tersedia untuk reservasi baru",
+      "acceptingDesc": "Properti Anda menerima reservasi baru",
+      "fullyBookedDesc": "Semua properti Anda tampak penuh bagi tamu",
+      "savedToast": "Preferensi disimpan",
+      "options": {
+        "1h": "Dalam 1 jam",
+        "12h": "Dalam 12 jam",
+        "24h": "Dalam 24 jam",
+        "48h": "Dalam 48 jam"
+      }
+    },
+    "notif": {
+      "header": "Pilih cara Anda ingin diberitahu untuk setiap jenis acara.",
+      "email": "Email",
+      "sms": "SMS",
+      "inapp": "Dalam aplikasi",
+      "savedToast": "Preferensi notifikasi disimpan",
+      "events": {
+        "new_booking": "Reservasi baru dikonfirmasi",
+        "booking_request": "Permintaan reservasi diterima",
+        "new_message": "Pesan tamu baru",
+        "review_received": "Ulasan tamu diposting",
+        "payout_sent": "Pembayaran dimulai",
+        "price_suggestion": "Saran penetapan harga cerdas",
+        "security_alert": "Peringatan keamanan akun"
+      }
+    },
+    "security": {
+      "changePassword": "Ganti kata sandi",
+      "currentPassword": "Kata sandi saat ini",
+      "newPassword": "Kata sandi baru",
+      "confirmNew": "Konfirmasi kata sandi baru",
+      "updatePassword": "Perbarui kata sandi",
+      "passwordUpdatedToast": "Kata sandi diperbarui",
+      "twoFA": "Autentikasi dua faktor",
+      "twoFAEnabled": "Akun Anda dilindungi dengan 2FA melalui aplikasi autentikator",
+      "twoFADisabled": "Tambahkan lapisan keamanan ekstra ke akun Anda",
+      "twoFAEnabledToast": "2FA diaktifkan",
+      "twoFADisabledToast": "2FA dinonaktifkan",
+      "activeSessions": "Sesi aktif",
+      "current": "Saat ini",
+      "signOut": "Keluar",
+      "sessionSignedOutToast": "Sesi dikeluarkan",
+      "dangerZone": "Zona berbahaya",
+      "dangerZoneDesc": "Hapus permanen akun tuan rumah dan semua properti Anda. Ini tidak dapat dibatalkan.",
+      "deleteAccount": "Hapus akun",
+      "modal": {
+        "title": "Hapus akun",
+        "desc": "Ini akan menghapus permanen akun dan semua properti Anda. Ketik DELETE untuk konfirmasi.",
+        "placeholder": "Ketik DELETE",
+        "cancel": "Batal",
+        "deletePermanently": "Hapus permanen",
+        "typeError": "Ketik DELETE untuk konfirmasi",
+        "submittedToast": "Permintaan penghapusan akun diajukan — Anda akan menerima email konfirmasi"
+      }
+    }
+  },
+  "language": {
+    "label": "Bahasa",
+    "en": "English",
+    "zh": "中文",
+    "id": "Bahasa Indonesia"
+  }
+}

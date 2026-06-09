@@ -1,0 +1,561 @@
+{
+  "nav": {
+    "dashboard": "仪表盘",
+    "listings": "房源管理",
+    "calendar": "日历",
+    "reservations": "预订管理",
+    "messages": "消息",
+    "insights": "数据分析",
+    "payouts": "收款管理",
+    "profile": "个人资料",
+    "forHosts": "面向房东",
+    "previewPublicSite": "预览公共网站",
+    "logOut": "退出登录",
+    "signingOut": "正在退出…",
+    "hostSince": "加入时间：{year}"
+  },
+  "common": {
+    "save": "保存更改",
+    "saving": "保存中…",
+    "cancel": "取消",
+    "approve": "批准",
+    "decline": "拒绝",
+    "view": "查看",
+    "edit": "编辑",
+    "delete": "删除",
+    "viewAll": "查看全部",
+    "nights": "{count}晚",
+    "guests": "{count}位房客"
+  },
+  "auth": {
+    "login": {
+      "title": "欢迎回来",
+      "subtitle": "登录您的房东账户",
+      "email": "电子邮箱",
+      "password": "密码",
+      "forgotPassword": "忘记密码？",
+      "submit": "登录",
+      "submitting": "登录中…",
+      "wechat": "使用微信继续",
+      "noAccount": "还没有房东账户？",
+      "signUp": "立即注册",
+      "guestLink": "您是访客？",
+      "visitBaliVilla": "访问 BaliVilla",
+      "error": {
+        "invalidCredentials": "邮箱或密码错误",
+        "notAHost": "此账户未注册为房东，请先注册为房东",
+        "failed": "登录失败，请重试",
+        "emailNotVerified": "请先验证您的邮箱后再登录。"
+      },
+      "resendVerification": "重新发送验证邮件",
+      "resendSent": "验证邮件已发送，请查收收件箱。"
+    },
+    "signup": {
+      "title": "成为房东",
+      "subtitle": "创建您的免费房东账户",
+      "firstName": "名",
+      "lastName": "姓",
+      "email": "电子邮箱",
+      "phone": "电话号码（可选）",
+      "password": "密码",
+      "confirmPassword": "确认密码",
+      "submit": "创建账户",
+      "submitting": "创建中…",
+      "hasAccount": "已有房东账户？",
+      "logIn": "立即登录",
+      "success": {
+        "title": "请查看您的邮箱",
+        "desc": "我们已向 {email} 发送了验证链接",
+        "loginNow": "立即登录",
+        "resend": "重新发送邮件"
+      }
+    },
+    "forgotPassword": {
+      "title": "重置密码",
+      "subtitle": "输入您的邮箱，我们将发送重置链接。",
+      "email": "电子邮箱",
+      "emailPlaceholder": "your@email.com",
+      "submit": "发送重置链接",
+      "submitting": "发送中…",
+      "success": {
+        "sent": "重置链接已发送至 {email}",
+        "tryAgain": "重新发送"
+      },
+      "backToLogin": "返回登录"
+    },
+    "verifyEmail": {
+      "loading": "正在验证您的邮箱…",
+      "success": {
+        "title": "邮箱已验证！",
+        "desc": "您的房东账户已就绪，登录即可开始使用。",
+        "login": "登录房东后台"
+      },
+      "error": {
+        "title": "验证失败"
+      },
+      "backToLogin": "返回登录"
+    }
+  },
+  "dashboard": {
+    "greeting": {
+      "welcome": "欢迎回来。",
+      "firstVilla": "欢迎，{name}。让我们上架您的第一套房源吧。",
+      "checkIns": "欢迎回来，{name}。您本周有 {count} 个入住。",
+      "fillDates": "欢迎回来，{name}。准备好填满更多日期了吗？"
+    },
+    "viewListings": "查看我的房源",
+    "todayCheckIns": "今日入住",
+    "todayCheckOuts": "今日退房",
+    "noneToday": "今日无预订",
+    "guestsCount": "{count}位房客",
+    "actionItems": "待办事项",
+    "actionItemsDesc": "需要您关注的任务",
+    "allCaughtUp": "一切已就绪！",
+    "recentBookings": "近期预订",
+    "noBookingsYet": "暂无预订",
+    "metric": {
+      "bookingsThisMonth": "本月预订量",
+      "payoutThisMonth": "本月收入",
+      "avgRating": "平均评分",
+      "totalBookings": "预订总量",
+      "fromBookings": "来自 {count} 个预订"
+    },
+    "alert": {
+      "pendingBookings": "{count} 个预订待审批",
+      "unreadMessages": "{count} 条未读消息",
+      "review": "审批",
+      "reply": "回复",
+      "updateCalendar": "更新日历可用性"
+    },
+    "status": {
+      "confirmed": "已确认",
+      "inHouse": "入住中",
+      "pendingApproval": "待审批",
+      "completed": "已完成",
+      "cancelled": "已取消",
+      "draft": "草稿"
+    }
+  },
+  "listings": {
+    "title": "您的房源",
+    "subtitle": "{count} 套房源在 BaliVilla",
+    "addListing": "添加新房源",
+    "filters": {
+      "all": "全部",
+      "published": "已发布",
+      "pendingReview": "审核中",
+      "paused": "已暂停",
+      "draft": "草稿"
+    },
+    "empty": {
+      "title": "您还没有房源",
+      "desc": "在 30 分钟内上架您的第一套别墅，开始接待中国访客。",
+      "cta": "创建首个房源"
+    },
+    "noResults": {
+      "title": "没有\"{filter}\"状态的房源",
+      "desc": "调整筛选条件或添加新房源。"
+    },
+    "card": {
+      "bookings": "{count} 个预订",
+      "occupancy": "{pct}% 入住率",
+      "settings": "设置",
+      "pause": "暂停房源",
+      "unpause": "取消暂停",
+      "previewAsGuest": "以访客预览",
+      "duplicate": "复制",
+      "deleteListing": "删除房源"
+    }
+  },
+  "listingSettings": {
+    "title": "房源设置",
+    "subtitle": "价格、规则和可用性设置",
+    "pricing": {
+      "title": "定价",
+      "nightlyPrice": "每晚价格 (IDR)",
+      "cleaningFee": "清洁费（可选）",
+      "weekendPremium": "周末溢价",
+      "weekendPremiumHint": "应用于周五和周六晚",
+      "noPremium": "无溢价",
+      "premium50": "+50%",
+      "priceRequired": "请填写每晚价格"
+    },
+    "stayLength": {
+      "title": "入住时长",
+      "minNights": "最少晚数",
+      "maxNights": "最多晚数"
+    },
+    "cancellation": {
+      "title": "取消政策",
+      "flexible": "灵活",
+      "flexibleDesc": "入住前 24 小时内可全额退款",
+      "moderate": "适中",
+      "moderateDesc": "提前 5 天以上全额退款；5 天内退款 50%",
+      "strict": "严格",
+      "strictDesc": "预订后 48 小时内可全额退款（须距入住 14 天以上）"
+    },
+    "houseRules": {
+      "title": "房屋规则",
+      "no_smoking": "禁止吸烟",
+      "no_parties": "禁止举办派对或活动",
+      "no_pets": "禁止携带宠物",
+      "children_ok": "欢迎携带儿童",
+      "quiet_hours": "晚上 10 点后请保持安静",
+      "register_guests": "所有住客须登记注册"
+    },
+    "instantBook": {
+      "title": "即时预订",
+      "desc": "开启后，房客可直接预订无需您审批；关闭后，您需逐一审核每条预订请求。"
+    },
+    "save": "保存更改",
+    "saving": "保存中…"
+  },
+  "reservations": {
+    "title": "预订管理",
+    "subtitle": "{count} 个预订",
+    "searchPlaceholder": "搜索房客或别墅…",
+    "showing": "显示 {shown} 条，共 {total} 条",
+    "tabs": {
+      "all": "全部",
+      "pending": "待审批",
+      "upcoming": "即将到来",
+      "inHouse": "入住中",
+      "completed": "已完成",
+      "cancelled": "已取消"
+    },
+    "status": {
+      "confirmed": "已确认",
+      "inHouse": "入住中",
+      "completed": "已完成",
+      "pendingApproval": "待审批",
+      "cancelled": "已取消"
+    },
+    "table": {
+      "guest": "房客",
+      "villa": "别墅",
+      "checkIn": "入住",
+      "checkOut": "退房",
+      "nights": "晚数",
+      "payout": "收款",
+      "status": "状态"
+    },
+    "approve": "批准",
+    "decline": "拒绝",
+    "view": "查看",
+    "viewDetails": "查看详情",
+    "empty": {
+      "title": "未找到预订",
+      "desc": "调整筛选条件或搜索。"
+    },
+    "pagination": {
+      "page": "第 {page} 页，共 {total} 页"
+    },
+    "approvedToast": "预订已批准。",
+    "declinedToast": "预订已拒绝。",
+    "errorApprove": "无法批准预订。",
+    "errorDecline": "无法拒绝预订。"
+  },
+  "reservationDetail": {
+    "title": "预订详情",
+    "status": {
+      "confirmed": "已确认",
+      "inHouse": "入住中",
+      "completed": "已完成",
+      "pendingApproval": "待审批",
+      "pendingPayment": "待付款",
+      "cancelled": "已取消"
+    },
+    "timeline": {
+      "bookingCreated": "预订已创建",
+      "paymentConfirmed": "付款已确认",
+      "checkInDue": "预计入住",
+      "checkedIn": "已入住",
+      "checkedOut": "已退房",
+      "reviewReceived": "已收到评价",
+      "payoutSent": "收款已发送"
+    },
+    "guest": "房客",
+    "stayDetails": "入住详情",
+    "checkIn": "入住",
+    "checkOut": "退房",
+    "nights": "晚数",
+    "guests": "房客人数",
+    "paymentBreakdown": "付款明细",
+    "specialRequests": "特殊要求",
+    "actions": {
+      "approveBooking": "批准预订",
+      "declineBooking": "拒绝预订",
+      "markCheckIn": "标记入住",
+      "messageGuest": "发消息给房客",
+      "cancelBooking": "取消预订",
+      "markCheckOut": "标记退房",
+      "reportIssue": "报告问题",
+      "viewReview": "查看评价"
+    },
+    "back": "返回",
+    "notFound": "未找到预订记录",
+    "backToReservations": "← 返回预订列表",
+    "approving": "正在批准…",
+    "declining": "正在拒绝…",
+    "actionsTitle": "操作",
+    "bookingTimeline": "预订时间轴",
+    "yourPayout": "您的收款",
+    "nightlyRateLine": "每晚价格 × {nights} 晚",
+    "cleaningFee": "清洁费",
+    "serviceFee": "服务费",
+    "totalIdr": "总计（IDR）",
+    "guestPaidCny": "房客支付（CNY）",
+    "commission": "BaliVilla 佣金（14%）",
+    "toast": {
+      "markCheckIn": "已标记入住",
+      "cancel": "预订已取消",
+      "markCheckOut": "已标记退房 — 感谢入住！",
+      "reportIssue": "已通知客服团队",
+      "viewReview": "点评功能即将上线",
+      "approved": "预订已批准",
+      "declined": "预订已拒绝"
+    }
+  },
+  "messages": {
+    "title": "消息",
+    "searchPlaceholder": "搜索…",
+    "noConversations": "未找到对话。",
+    "selectConversation": "选择一段对话",
+    "quickReplies": "快捷回复",
+    "messagePlaceholder": "输入消息…（回车发送，Shift+回车换行）",
+    "failedToSend": "发送失败。",
+    "attachmentSoon": "文件附件功能即将上线",
+    "feedbackGood": "感谢您的反馈！",
+    "feedbackBad": "已标记待审核——我们将改进此翻译",
+    "quickReply": {
+      "checkIn": "入住说明",
+      "directions": "机场路线",
+      "wifi": "Wifi 密码",
+      "houseRules": "房屋规则提醒"
+    }
+  },
+  "calendar": {
+    "title": "可用性与价格",
+    "subtitle": "点击日期设置价格或屏蔽。拖动可选择范围。",
+    "allVillas": "全部别墅（{count}）",
+    "today": "今天",
+    "legend": {
+      "booked": "已预订",
+      "pending": "待审批",
+      "blocked": "已屏蔽",
+      "available": "可用",
+      "selected": "已选择"
+    },
+    "panel": {
+      "bookingDetails": "预订详情",
+      "pendingApproval": "待审批",
+      "daysSelected": "已选 {count} 天",
+      "dateDetails": "日期详情",
+      "checkIn": "入住",
+      "checkOut": "退房",
+      "totalCharged": "已收费总额",
+      "yourPayout": "您的收款",
+      "pricePerNight": "每晚价格 (IDR)",
+      "save": "保存",
+      "blockDate": "屏蔽此日期",
+      "blockDates": "屏蔽这些日期"
+    },
+    "showing": "显示 {count} 处房产 · {days} 天",
+    "seasonalRules": {
+      "title": "季节性定价规则",
+      "desc": "在旺季期间自动为所有 {count} 处房产应用加价",
+      "addRule": "添加规则",
+      "noRules": "暂无规则。",
+      "ruleEditorSoon": "规则编辑器即将推出"
+    },
+    "toast": {
+      "approved": "预订已批准。",
+      "declined": "预订已拒绝。",
+      "errorApprove": "无法批准预订。",
+      "errorDecline": "无法拒绝预订。",
+      "priceSaved": "价格已保存：每晚 Rp {price}",
+      "datesBlocked": "日期已屏蔽",
+      "ruleRemoved": "规则已删除"
+    }
+  },
+  "insights": {
+    "title": "数据分析",
+    "subtitle": "{count} 处房产的表现",
+    "sampleData": "示例数据——实时分析即将推出",
+    "charts": {
+      "revenue": "收入趋势",
+      "revenueSubtitle": "月度总收入 (IDR)",
+      "occupancy": "入住率",
+      "occupancySubtitle": "所有 {count} 处房产的平均入住率 (%)",
+      "bookingSources": "预订来源",
+      "bookingSourcesSubtitle": "房客如何找到您的房产",
+      "adr": "平均日房价",
+      "adrSubtitle": "已入住夜晚的每晚收入 (IDR)",
+      "reviewScore": "评分趋势",
+      "reviewScoreSubtitle": "跨房产平均访客评分（满分 5.0）"
+    },
+    "topProperties": "表现最佳的房产",
+    "table": {
+      "villa": "别墅",
+      "bookings": "预订量",
+      "revenue": "收入",
+      "avgRating": "平均评分",
+      "occupancy": "入住率"
+    },
+    "timeRanges": {
+      "last30": "最近 30 天",
+      "last90": "最近 90 天",
+      "lastYear": "过去一年",
+      "allTime": "全部时间"
+    }
+  },
+  "payouts": {
+    "title": "收款管理",
+    "subtitle": "来自您 {count} 处房产的收入——已发送至 {account}",
+    "balance": {
+      "available": "可用余额",
+      "pending": "待处理余额",
+      "upcoming": "即将到账",
+      "readyToWithdraw": "可立即提现",
+      "bookingsOnHold": "预订仍在 24 小时保留中",
+      "fromFutureBookings": "来自已确认的未来预订"
+    },
+    "withdrawNow": "立即提现",
+    "airwallexNote": "收款通过 Airwallex 处理，并在访客退房后 24 小时内以 IDR 结算至您的印尼银行账户。支付处理完全配置后将启用实时提现。",
+    "payoutHistory": "收款历史",
+    "payoutsOnRecord": "{count} 条收款记录",
+    "status": {
+      "completed": "已完成",
+      "pending": "处理中",
+      "failed": "失败"
+    },
+    "bankingInfo": "银行信息",
+    "bankingInfoDesc": "收款的目标银行账户",
+    "editBankingInfo": "编辑银行信息",
+    "bankFields": {
+      "bankName": "银行名称",
+      "accountHolder": "账户持有人",
+      "accountNumber": "账号",
+      "swift": "SWIFT / BIC",
+      "currency": "收款货币",
+      "schedule": "收款计划"
+    },
+    "modal": {
+      "title": "提现资金",
+      "available": "可用：{amount}",
+      "amountLabel": "提现金额 (IDR)",
+      "destination": "目标账户",
+      "estimatedArrival": "预计到账",
+      "minimumWithdrawal": "最低提现金额",
+      "cancel": "取消",
+      "confirm": "确认提现"
+    },
+    "table": {
+      "date": "日期",
+      "amount": "金额",
+      "method": "方式",
+      "status": "状态",
+      "reference": "参考编号"
+    },
+    "receipt": "收据",
+    "toast": {
+      "initiated": "已发起 {amount} 的提现——将在 1-3 个工作日内到账",
+      "errorMin": "最低提现金额为 {amount}",
+      "errorExceeds": "金额超出可用余额",
+      "receiptSoon": "收据下载即将推出",
+      "bankEditNote": "需要重新验证——请查看您的邮件以继续"
+    }
+  },
+  "profile": {
+    "yourProfile": "您的个人资料",
+    "hostingSince": "加入时间：{year} · 回复率 {rate}%",
+    "tabs": {
+      "personalInfo": "个人信息",
+      "hostingPrefs": "托管偏好",
+      "notifications": "通知设置",
+      "security": "安全"
+    },
+    "personal": {
+      "profilePhoto": "个人照片",
+      "uploadPhoto": "上传新照片",
+      "photoHint": "JPG 或 PNG · 最大 4 MB · 最小 400×400 px",
+      "chooseFile": "选择文件",
+      "displayName": "显示名称",
+      "visibleToGuests": "（对访客可见）",
+      "bio": "简介",
+      "charCount": "{count} / 500 字符",
+      "languagesSpoken": "会说的语言",
+      "email": "电子邮箱",
+      "readOnly": "（只读）",
+      "phone": "电话号码",
+      "savedToast": "个人资料已更新"
+    },
+    "prefs": {
+      "autoReply": "为新咨询自动回复",
+      "autoReplyDesc": "当访客提出咨询时，会立即收到此消息",
+      "responseTimeGoal": "响应时间目标",
+      "responseTimeHint": "显示在您的房源上——更快的响应率可提升搜索排名",
+      "available": "可接受新预订",
+      "acceptingDesc": "您的房源正在接受新预订",
+      "fullyBookedDesc": "所有房源对访客显示为已满",
+      "savedToast": "偏好已保存",
+      "options": {
+        "1h": "1 小时内",
+        "12h": "12 小时内",
+        "24h": "24 小时内",
+        "48h": "48 小时内"
+      }
+    },
+    "notif": {
+      "header": "选择每种事件类型的通知方式。",
+      "email": "电子邮件",
+      "sms": "短信",
+      "inapp": "应用内",
+      "savedToast": "通知偏好已保存",
+      "events": {
+        "new_booking": "新预订已确认",
+        "booking_request": "收到预订请求",
+        "new_message": "新访客消息",
+        "review_received": "访客评价已发布",
+        "payout_sent": "收款已发起",
+        "price_suggestion": "智能定价建议",
+        "security_alert": "账户安全警报"
+      }
+    },
+    "security": {
+      "changePassword": "修改密码",
+      "currentPassword": "当前密码",
+      "newPassword": "新密码",
+      "confirmNew": "确认新密码",
+      "updatePassword": "更新密码",
+      "passwordUpdatedToast": "密码已更新",
+      "twoFA": "双重身份验证",
+      "twoFAEnabled": "您的账户已通过认证器应用启用双重验证保护",
+      "twoFADisabled": "为您的账户添加额外安全层",
+      "twoFAEnabledToast": "已启用双重验证",
+      "twoFADisabledToast": "已禁用双重验证",
+      "activeSessions": "活跃会话",
+      "current": "当前",
+      "signOut": "退出",
+      "sessionSignedOutToast": "会话已退出",
+      "dangerZone": "危险区域",
+      "dangerZoneDesc": "永久删除您的房东账户及所有房源。此操作无法撤销。",
+      "deleteAccount": "删除账户",
+      "modal": {
+        "title": "删除账户",
+        "desc": "这将永久删除您的账户及所有房源。请输入 DELETE 以确认。",
+        "placeholder": "输入 DELETE",
+        "cancel": "取消",
+        "deletePermanently": "永久删除",
+        "typeError": "请输入 DELETE 以确认",
+        "submittedToast": "账户删除请求已提交——您将收到确认邮件"
+      }
+    }
+  },
+  "language": {
+    "label": "语言",
+    "en": "English",
+    "zh": "中文",
+    "id": "印尼语"
+  }
+}
