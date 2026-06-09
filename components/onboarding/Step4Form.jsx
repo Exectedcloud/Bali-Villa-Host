@@ -18,7 +18,7 @@ export function Step4Form({ data, patch, router }) {
   async function handlePublish() {
     setPublishing(true);
     try {
-      await api.post('/host/villas/', data);
+      await api.post('/host/listings/', data);
       setPublished(true);
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : 'Failed to publish listing.');

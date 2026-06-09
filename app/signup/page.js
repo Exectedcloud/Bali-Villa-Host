@@ -68,6 +68,8 @@ export default function SignupPage() {
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
         setErrors({ email: 'This email is already registered as a host. Please log in instead.' });
+      } else if (err instanceof ApiError && err.status === 403) {
+        setSubmitted(true);
       } else if (err instanceof ApiError && err.status === 400) {
         const data = err.data || {};
         const mapped = {};
