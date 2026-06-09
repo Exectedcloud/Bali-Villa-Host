@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, Home, Calendar, BookOpen, MessageSquare,
   BarChart3, Banknote, User, ChevronLeft, ChevronRight,
-  LogOut, ExternalLink, Menu, X, Globe,
+  LogOut, ExternalLink, Menu, X, Globe, CheckCircle,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslations } from 'next-intl';
@@ -106,6 +106,11 @@ export function HostSidebar() {
     { key: 'payouts',      href: '/dashboard/payouts',      icon: Banknote },
     { key: 'profile',      href: '/dashboard/profile',      icon: User },
   ];
+
+  const isAdmin = user?.roles?.includes('admin');
+  const ADMIN_NAV = isAdmin ? [
+    { key: 'adminReview', href: '/admin', icon: CheckCircle },
+  ] : [];
 
   function NavLink({ item, onClick }) {
     const active = isActive(pathname, item.href);
@@ -269,26 +274,56 @@ export function HostSidebar() {
 
         {/* Nav items */}
         <nav className="flex-1 overflow-y-auto py-2">
-          {NAV_ITEMS.map((item) => {
-            const active = isActive(pathname, item.href);
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                title={collapsed ? t(item.key) : undefined}
-                className={cn(
-                  'flex items-center py-2.5 mx-2 rounded-xl text-sm font-medium transition-colors duration-150',
-                  collapsed
-                    ? cn('justify-center px-2', active ? 'bg-jade-soft text-jade' : 'text-ink-mute hover:bg-surface-alt hover:text-jade')
-                    : cn('gap-3 px-3 border-l-4', active ? 'bg-jade-soft text-jade border-jade' : 'text-ink-mute hover:bg-surface-alt hover:text-jade border-transparent'),
-                )}
-              >
-                <Icon className="size-5 shrink-0" />
-                {!collapsed && <span className="flex-1">{t(item.key)}</span>}
-              </Link>
-            );
-          })}
+          <div className="space-y-0.5 mb-6">
+            {NAV_ITEMS.map((item) => {
+              const active = isActive(pathname, item.href);
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  title={collapsed ? t(item.key) : undefined}
+                  className={cn(
+                    'flex items-center py-2.5 mx-2 rounded-xl text-sm font-medium transition-colors duration-150',
+                    collapsed
+                      ? cn('justify-center px-2', active ? 'bg-jade-soft text-jade' : 'text-ink-mute hover:bg-surface-alt hover:text-jade')
+                      : cn('gap-3 px-3 border-l-4', active ? 'bg-jade-soft text-jade border-jade' : 'text-ink-mute hover:bg-surface-alt hover:text-jade border-transparent'),
+                  )}
+                >
+                  <Icon className="size-5 shrink-0" />
+                  {!collapsed && <span className="flex-1">{t(item.key)}</span>}
+                </Link>
+              );
+            })}
+          </div>
+
+          {ADMIN_NAV.length > 0 && (
+            <div className="px-4 mb-4">
+               {!collapsed && <p className="text-[10px] font-bold text-mist uppercase tracking-widest mb-3 ml-2">Admin Panel</p>}
+               <div className="space-y-0.5">
+                  {ADMIN_NAV.map((item) => {
+                    const active = isActive(pathname, item.href);
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        title={collapsed ? (t(item.key) || 'Review') : undefined}
+                        className={cn(
+                          'flex items-center py-2.5 rounded-xl text-sm font-medium transition-colors duration-150',
+                          collapsed
+                            ? cn('justify-center px-2', active ? 'bg-jade-soft text-jade' : 'text-ink-mute hover:bg-surface-alt hover:text-jade')
+                            : cn('gap-3 px-3 border-l-4', active ? 'bg-jade-soft text-jade border-jade' : 'text-ink-mute hover:bg-surface-alt hover:text-jade border-transparent'),
+                        )}
+                      >
+                        <Icon className="size-5 shrink-0" />
+                        {!collapsed && <span className="flex-1">{t(item.key) || 'Review Applications'}</span>}
+                      </Link>
+                    );
+                  })}
+               </div>
+            </div>
+          )}
         </nav>
 
         {/* Bottom user section */}

@@ -8,6 +8,7 @@
     "insights": "Insights",
     "payouts": "Payouts",
     "profile": "Profile",
+    "adminReview": "Review Applications",
     "forHosts": "for Hosts",
     "previewPublicSite": "Preview public site",
     "logOut": "Log out",
@@ -94,6 +95,26 @@
         "title": "Verification failed"
       },
       "backToLogin": "Back to log in"
+    },
+    "resetPassword": {
+      "title": "Set new password",
+      "subtitle": "Choose a strong password for your host account.",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "submit": "Set new password",
+      "submitting": "Updating…",
+      "backToLogin": "Back to login",
+      "invalidLink": "This reset link is invalid or incomplete.",
+      "requestNew": "Request a new reset link",
+      "success": {
+        "title": "Password updated!",
+        "desc": "Your password has been changed. You can now log in with your new password.",
+        "login": "Log in"
+      },
+      "error": {
+        "mismatch": "Passwords do not match.",
+        "failed": "This reset link has expired or already been used. Please request a new one."
+      }
     }
   },
   "dashboard": {
@@ -170,6 +191,15 @@
   "listingSettings": {
     "title": "Listing settings",
     "subtitle": "Pricing, rules, and availability settings",
+    "photos": {
+      "title": "Photos",
+      "cover": "Cover",
+      "add": "Add photos",
+      "uploading": "Uploading…",
+      "emptyTitle": "Upload villa photos",
+      "emptyHint": "JPG or PNG · Max 10 MB per photo",
+      "deleteError": "Failed to delete photo"
+    },
     "pricing": {
       "title": "Pricing",
       "nightlyPrice": "Nightly price (IDR)",
@@ -508,6 +538,7 @@
     },
     "notif": {
       "header": "Choose how you want to be notified for each event type.",
+      "adminReview": "Review Applications",
       "email": "Email",
       "sms": "SMS",
       "inapp": "In-app",

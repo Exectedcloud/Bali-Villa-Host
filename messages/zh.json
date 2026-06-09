@@ -8,6 +8,7 @@
     "insights": "数据分析",
     "payouts": "收款管理",
     "profile": "个人资料",
+    "adminReview": "审核申请",
     "forHosts": "面向房东",
     "previewPublicSite": "预览公共网站",
     "logOut": "退出登录",
@@ -94,6 +95,26 @@
         "title": "验证失败"
       },
       "backToLogin": "返回登录"
+    },
+    "resetPassword": {
+      "title": "设置新密码",
+      "subtitle": "为您的房东账户设置一个强密码。",
+      "newPassword": "新密码",
+      "confirmPassword": "确认新密码",
+      "submit": "设置新密码",
+      "submitting": "更新中…",
+      "backToLogin": "返回登录",
+      "invalidLink": "此重置链接无效或不完整。",
+      "requestNew": "申请新的重置链接",
+      "success": {
+        "title": "密码已更新！",
+        "desc": "您的密码已修改，现在可以使用新密码登录。",
+        "login": "立即登录"
+      },
+      "error": {
+        "mismatch": "两次输入的密码不一致。",
+        "failed": "此重置链接已过期或已使用，请重新申请。"
+      }
     }
   },
   "dashboard": {
@@ -170,6 +191,15 @@
   "listingSettings": {
     "title": "房源设置",
     "subtitle": "价格、规则和可用性设置",
+    "photos": {
+      "title": "照片",
+      "cover": "封面",
+      "add": "添加照片",
+      "uploading": "上传中…",
+      "emptyTitle": "上传别墅照片",
+      "emptyHint": "JPG 或 PNG · 每张最大 10 MB",
+      "deleteError": "删除照片失败"
+    },
     "pricing": {
       "title": "定价",
       "nightlyPrice": "每晚价格 (IDR)",

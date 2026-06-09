@@ -59,6 +59,7 @@ const DEFAULT_DATA = {
   bedrooms: 2,
   beds: 2,
   bathrooms: 2,
+  photos: [],
   videoFile: null,
   videoUrl: '',
   title: '',
@@ -96,7 +97,7 @@ const DEFAULT_DATA = {
 
 function isStepValid(step, data) {
   if (step === 1) return data.propertyName.trim().length > 0 && data.address.trim().length > 0;
-  if (step === 2) return data.title.trim().length > 0 && data.description.trim().length > 0 && data.amenities.length >= 3;
+  if (step === 2) return data.photos?.length >= 1 && data.title.trim().length > 0 && data.description.trim().length > 0 && data.amenities.length >= 3;
   if (step === 3) return Number(data.basePriceIdr.toString().replace(/\D/g, '')) > 0;
   return true;
 }

@@ -1,14 +1,6 @@
 'use client';
 
-import { Home, Building2, Tent, Hotel, MoreHorizontal, Plus, Minus, ChevronDown } from 'lucide-react';
-
-const PROPERTY_TYPES = [
-  { value: 'villa', label: 'Villa', icon: Home },
-  { value: 'vacation_home', label: 'Vacation home', icon: Building2 },
-  { value: 'guest_house', label: 'Guest house', icon: Tent },
-  { value: 'hotel', label: 'Hotel', icon: Hotel },
-  { value: 'other', label: 'Other', icon: MoreHorizontal },
-];
+import { Plus, Minus, ChevronDown } from 'lucide-react';
 
 const COUNTRY_CODES = [
   { code: '+62', flag: '🇮🇩' },
@@ -36,28 +28,6 @@ export function Step1Form({ data, patch, showErrors }) {
 
   return (
     <div className="flex flex-col gap-10">
-      {/* Property type */}
-      <section className="flex flex-col gap-4">
-        <h2 className="text-base font-semibold text-ink">Property type</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-          {PROPERTY_TYPES.map(({ value, label, icon: Icon }) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => patch({ propertyType: value })}
-              className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-colors ${
-                data.propertyType === value
-                  ? 'border-jade bg-jade-soft text-jade'
-                  : 'border-rule bg-surface text-ink-mute hover:border-jade/40 hover:text-ink'
-              }`}
-            >
-              <Icon className="size-5" />
-              <span className="text-xs font-medium">{label}</span>
-            </button>
-          ))}
-        </div>
-      </section>
-
       {/* Property name */}
       <section className="flex flex-col gap-3">
         <h2 className="text-base font-semibold text-ink">Property name</h2>

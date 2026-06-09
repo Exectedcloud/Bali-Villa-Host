@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { api, ApiError } from '@/lib/api-client';
+import PhotosSection from './PhotosSection';
 
 const POLICIES = [
   { id: 'flexible', labelKey: 'flexible', descKey: 'flexibleDesc' },
@@ -120,6 +121,9 @@ export default function ListingSettingsPage() {
           <p className="text-sm text-ink-mute mt-0.5">{t('subtitle')}</p>
         </div>
       </div>
+
+      {/* Photos */}
+      <PhotosSection villaId={id} photos={villa?.photos ?? []} />
 
       {/* Pricing */}
       <section className="bg-surface rounded-2xl border border-rule p-6 flex flex-col gap-5">

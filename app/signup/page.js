@@ -68,6 +68,11 @@ export default function SignupPage() {
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
         setErrors({ email: 'This email is already registered as a host. Please log in instead.' });
+      } else if (err instanceof ApiError && err.status === 403 && err.message.toLowerCase().includes('verify')) {
+        // Account exists but email not yet verified — treat same as fresh signup success
+        setSubmitted(true);
+      } else if (err instanceof ApiError && err.status === 401) {
+        setErrors({ email: 'An account with this email already exists. Please log in instead.' });
       } else if (err instanceof ApiError && err.status === 400) {
         const data = err.data || {};
         const mapped = {};

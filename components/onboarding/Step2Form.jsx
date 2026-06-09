@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { toast } from 'sonner';
 import {
-  Video, X, ChevronDown, ChevronUp, Sparkles,
+  Camera, Video, X, ChevronDown, ChevronUp, Sparkles,
   Wifi, Tv, UtensilsCrossed, Wind, Car, Thermometer, Laptop, Waves,
   Droplets, Sun, Flame, Music, Dumbbell, Bell, HeartPulse,
   AlertTriangle, AlertCircle, Accessibility, DoorOpen,
@@ -66,6 +66,7 @@ const AMENITY_GROUPS = [
 
 export function Step2Form({ data, patch, showErrors }) {
   const [openGroups, setOpenGroups] = useState({ popular: true, standout: false, safety: false, accessibility: false });
+  const photoInputRef = useRef(null);
   const videoInputRef = useRef(null);
 
   function toggleGroup(id) {
@@ -98,12 +99,92 @@ export function Step2Form({ data, patch, showErrors }) {
     if (videoInputRef.current) videoInputRef.current.value = '';
   }
 
+  function handlePhotoFiles(files) {
+    if (!files?.length) return;
+    const newFiles = Array.from(files).map((f) => ({ file: f, preview: URL.createObjectURL(f) }));
+    patch({ photos: [...(data.photos ?? []), ...newFiles] });
+    if (photoInputRef.current) photoInputRef.current.value = '';
+  }
+
+  function removePhoto(idx) {
+    const updated = [...(data.photos ?? [])];
+    URL.revokeObjectURL(updated[idx].preview);
+    updated.splice(idx, 1);
+    patch({ photos: updated });
+  }
+
   function handleAiGenerate() {
     toast.info('AI assistance coming soon');
   }
 
   return (
     <div className="flex flex-col gap-10">
+      {/* Photos */}
+      <section className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-base font-semibold text-ink">Photos</h2>
+            <p className="text-xs text-ink-mute mt-0.5">At least 1 photo required · JPG or PNG · Max 10 MB each</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => photoInputRef.current?.click()}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-rule text-sm font-medium text-ink-soft hover:bg-surface-alt hover:text-ink transition-colors"
+          >
+            <Camera className="size-4" />
+            Add photos
+          </button>
+          <input
+            ref={photoInputRef}
+            type="file"
+            accept="image/jpeg,image/png"
+            multiple
+            className="hidden"
+            onChange={(e) => handlePhotoFiles(e.target.files)}
+          />
+        </div>
+
+        {!data.photos?.length ? (
+          <button
+            type="button"
+            onClick={() => photoInputRef.current?.click()}
+            className={`border-2 border-dashed rounded-2xl p-12 flex flex-col items-center gap-3 hover:border-jade/50 hover:bg-jade-soft/30 transition-colors w-full ${showErrors ? 'border-danger' : 'border-rule'}`}
+          >
+            <div className="size-12 rounded-full bg-jade-soft flex items-center justify-center">
+              <Camera className="size-6 text-jade" />
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-medium text-ink">Upload villa photos</p>
+              <p className="text-xs text-ink-mute mt-1">JPG or PNG · Max 10 MB per photo</p>
+            </div>
+          </button>
+        ) : (
+          <div className="grid grid-cols-3 gap-3">
+            {data.photos.map((p, idx) => (
+              <div key={idx} className="relative aspect-video rounded-xl overflow-hidden border border-rule group">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={p.preview} alt="" className="w-full h-full object-cover" />
+                {idx === 0 && (
+                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-jade text-white text-[10px] font-semibold uppercase tracking-wide">
+                    Cover
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => removePhoto(idx)}
+                  className="absolute top-2 right-2 size-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <X className="size-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        {showErrors && !data.photos?.length && (
+          <p className="text-xs text-danger">At least 1 photo is required</p>
+        )}
+      </section>
+
       {/* Video upload */}
       <section className="flex flex-col gap-4">
         <h2 className="text-base font-semibold text-ink">Video tour</h2>

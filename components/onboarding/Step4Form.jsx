@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Dialog } from 'radix-ui';
-import { CheckCircle, ChevronDown, ChevronUp, Star, ExternalLink } from 'lucide-react';
+import { CheckCircle, ChevronDown, ChevronUp, Star, ExternalLink, Play } from 'lucide-react';
 import { toast } from 'sonner';
 import { api, ApiError } from '@/lib/api-client';
 
@@ -18,7 +18,37 @@ export function Step4Form({ data, patch, router }) {
   async function handlePublish() {
     setPublishing(true);
     try {
-      await api.post('/host/villas/', data);
+      // Clean money strings (remove commas) before sending to API
+      const cleanData = {
+        ...data,
+        basePriceIdr: data.basePriceIdr.replace(/\D/g, ''),
+        cleaningFee: data.cleaningFee.replace(/\D/g, ''),
+      };
+      
+      const res = await api.post('/host/villas/', cleanData);
+      const villaId = res?.villa?.id;
+
+      if (!villaId) throw new Error('Failed to create villa.');
+
+      // 1. Upload Video if present
+      if (data.videoFile) {
+        const vfd = new FormData();
+        vfd.append('video', data.videoFile);
+        await api.upload(`/host/villas/${villaId}/video/`, vfd);
+      }
+
+      // 2. Upload Photos
+      if (data.photos?.length) {
+        for (const { file } of data.photos) {
+          try {
+            const fd = new FormData();
+            fd.append('image', file);
+            await api.upload(`/host/villas/${villaId}/photos/`, fd);
+          } catch {
+            // continue
+          }
+        }
+      }
       setPublished(true);
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : 'Failed to publish listing.');
@@ -26,14 +56,14 @@ export function Step4Form({ data, patch, router }) {
     }
   }
 
-  const previewPhoto = data.videoUrl ? null : '/Villa1.jpg';
+  const previewPhoto = data.photos?.[0]?.preview || (data.videoUrl ? null : '/Villa1.jpg');
   const previewTitle = data.title || 'Your villa name';
   const previewLocation = [data.city, data.region].filter(Boolean).join(', ') || 'Bali, Indonesia';
   const previewPrice = data.basePriceIdr
     ? `Rp ${data.basePriceIdr}`
     : 'Rp —';
 
-  const canPublish = data.bankHolder && data.bankName && data.bankAccount && data.hostTerms;
+  const canPublish = data.bankHolder && data.bankName && data.bankAccount && data.hostTerms && data.videoFile;
 
   return (
     <div className="flex flex-col gap-10">
@@ -42,7 +72,7 @@ export function Step4Form({ data, patch, router }) {
         <div className="flex flex-col gap-4">
           <h2 className="text-base font-semibold text-ink">Listing preview</h2>
           <div className="bg-surface rounded-2xl border border-rule overflow-hidden shadow-md">
-            <div className="relative aspect-[4/3] overflow-hidden">
+            <div className="relative aspect-[4/3] overflow-hidden bg-ink/5">
               <img
                 src={previewPhoto}
                 alt="Villa preview"
@@ -50,7 +80,7 @@ export function Step4Form({ data, patch, router }) {
               />
               <div className="absolute top-3 left-3">
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface/90 backdrop-blur-sm text-xs font-semibold text-ink shadow-sm">
-                  Preview
+                  Property Preview
                 </span>
               </div>
             </div>
@@ -67,21 +97,67 @@ export function Step4Form({ data, patch, router }) {
                 <span className="font-mono text-base font-semibold text-ink">{previewPrice}</span>
                 <span className="text-xs text-ink-mute">/ night</span>
               </div>
-              <a
-                href="http://localhost:3000"
-                target="_blank"
-                rel="noreferrer"
-                className="mt-4 inline-flex items-center gap-1.5 text-xs text-jade hover:text-jade-deep transition-colors font-medium"
-              >
-                Preview as guest
-                <ExternalLink className="size-3" />
-              </a>
             </div>
           </div>
         </div>
 
         {/* Right — payout, tax, terms, publish */}
         <div className="flex flex-col gap-6">
+
+          {/* Verification Video Section */}
+          <div className="flex flex-col gap-3 p-5 bg-jade/5 rounded-xl border border-jade/20">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-ink">Verification video</h3>
+              {data.videoFile ? (
+                <CheckCircle className="size-5 text-jade" />
+              ) : (
+                <span className="text-[10px] font-bold text-jade uppercase bg-jade/10 px-1.5 py-0.5 rounded">Required</span>
+              )}
+            </div>
+            {data.videoFile ? (
+              <div className="flex items-center justify-between bg-white/50 border border-jade/10 rounded-lg p-3">
+                <div className="flex items-center gap-2 overflow-hidden">
+                  <Play className="size-4 text-jade shrink-0" />
+                  <span className="text-xs text-ink-soft truncate font-medium">{data.videoFile.name}</span>
+                </div>
+                <label className="text-[10px] font-bold text-jade hover:text-jade-deep cursor-pointer uppercase tracking-wider shrink-0 ml-4">
+                  Change
+                  <input 
+                    type="file" 
+                    className="hidden" 
+                    accept="video/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) patch({ videoFile: file });
+                    }}
+                  />
+                </label>
+              </div>
+            ) : (
+              <>
+                <p className="text-xs text-ink-soft leading-relaxed">
+                  Upload a short walk-through video of your villa to help our team verify your listing faster.
+                </p>
+                <div className="mt-1">
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-jade/30 rounded-lg cursor-pointer hover:bg-jade/10 transition-colors">
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <Play className="size-6 text-jade mb-2" />
+                      <p className="text-xs text-jade font-medium">Select verification video</p>
+                    </div>
+                    <input 
+                      type="file" 
+                      className="hidden" 
+                      accept="video/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) patch({ videoFile: file });
+                      }}
+                    />
+                  </label>
+                </div>
+              </>
+            )}
+          </div>
 
           {/* Banking info */}
           <div className="flex flex-col border border-rule rounded-xl overflow-hidden">
@@ -217,7 +293,7 @@ export function Step4Form({ data, patch, router }) {
           </button>
           {!canPublish && (
             <p className="text-xs text-ink-mute text-center -mt-2">
-              Complete banking info and accept terms to publish
+              Add verification video, banking info, and accept terms
             </p>
           )}
         </div>

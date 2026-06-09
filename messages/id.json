@@ -94,6 +94,26 @@
         "title": "Verifikasi gagal"
       },
       "backToLogin": "Kembali ke login"
+    },
+    "resetPassword": {
+      "title": "Buat kata sandi baru",
+      "subtitle": "Pilih kata sandi yang kuat untuk akun tuan rumah Anda.",
+      "newPassword": "Kata sandi baru",
+      "confirmPassword": "Konfirmasi kata sandi baru",
+      "submit": "Buat kata sandi baru",
+      "submitting": "Memperbarui…",
+      "backToLogin": "Kembali ke login",
+      "invalidLink": "Tautan reset ini tidak valid atau tidak lengkap.",
+      "requestNew": "Minta tautan reset baru",
+      "success": {
+        "title": "Kata sandi diperbarui!",
+        "desc": "Kata sandi Anda telah diubah. Sekarang Anda dapat masuk dengan kata sandi baru.",
+        "login": "Masuk"
+      },
+      "error": {
+        "mismatch": "Kata sandi tidak cocok.",
+        "failed": "Tautan reset ini sudah kedaluwarsa atau sudah digunakan. Silakan minta yang baru."
+      }
     }
   },
   "dashboard": {
@@ -170,6 +190,15 @@
   "listingSettings": {
     "title": "Pengaturan properti",
     "subtitle": "Pengaturan harga, aturan, dan ketersediaan",
+    "photos": {
+      "title": "Foto",
+      "cover": "Sampul",
+      "add": "Tambah foto",
+      "uploading": "Mengunggah…",
+      "emptyTitle": "Unggah foto villa",
+      "emptyHint": "JPG atau PNG · Maksimal 10 MB per foto",
+      "deleteError": "Gagal menghapus foto"
+    },
     "pricing": {
       "title": "Harga",
       "nightlyPrice": "Harga per malam (IDR)",
