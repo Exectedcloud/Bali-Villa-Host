@@ -3,77 +3,40 @@ import {
   House, Languages, CalendarCheck, Banknote,
   ArrowRight, TrendingUp, Globe, Percent,
 } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 import { HostTopNav } from '@/components/layout/HostTopNav';
 import { HostFooter } from '@/components/layout/HostFooter';
 import { HostFaqAccordion } from '@/components/home/HostFaqAccordion';
 import { HeroSection } from '@/components/home/HeroSection';
 import { ScrollReveal } from '@/components/ScrollReveal';
 
-const HOW_IT_WORKS = [
-  {
-    icon: House,
-    step: '01',
-    title: 'List your villa',
-    desc: 'Add photos, set your nightly rate in IDR, and describe your space in English. The whole process takes under 30 minutes.',
-  },
-  {
-    icon: Languages,
-    step: '02',
-    title: 'We translate automatically',
-    desc: 'Every listing, message, and review is instantly translated to Chinese. No Mandarin skills required — ever.',
-  },
-  {
-    icon: CalendarCheck,
-    step: '03',
-    title: 'Chinese guests book',
-    desc: 'Guests discover your villa on BaliVilla, pay securely in CNY via WeChat Pay or Alipay, and you get notified instantly.',
-  },
-  {
-    icon: Banknote,
-    step: '04',
-    title: 'You earn',
-    desc: 'Receive your payout in IDR directly to your bank account. 88% of every booking goes to you — always.',
-  },
-];
-
-const TRUST_ITEMS = [
-  {
-    icon: TrendingUp,
-    title: 'Earn from your villa',
-    stat: 'Avg. Rp 38M / month',
-    body: 'Top hosts on BaliVilla earn consistently from Chinese tourists who book longer stays and pay in full upfront.',
-  },
-  {
-    icon: Globe,
-    title: 'We bring Chinese guests',
-    stat: '10,000+ active travelers',
-    body: 'Our platform reaches travelers from mainland China, Hong Kong, and Singapore who are planning Bali holidays.',
-  },
-  {
-    icon: Languages,
-    title: 'We handle translation',
-    stat: 'Real-time Chinese ↔ English',
-    body: 'Every message between you and your guests is automatically translated. You write in English, they read in Chinese.',
-  },
-  {
-    icon: Percent,
-    title: 'Just 12% commission',
-    stat: 'No setup fees, ever',
-    body: 'You set your IDR price and keep 88% of every booking. We earn only when you earn.',
-  },
-];
-
 export const metadata = {
   title: 'BaliVilla for Hosts — Earn from your Bali villa',
   description: 'List your Bali villa and reach thousands of Chinese tourists. Automatic translation, WeChat Pay, Alipay — we handle the hard parts.',
 };
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const t = await getTranslations('home');
+
+  const HOW_IT_WORKS = [
+    { icon: House,         step: '01', title: t('step01Title'), desc: t('step01Desc') },
+    { icon: Languages,     step: '02', title: t('step02Title'), desc: t('step02Desc') },
+    { icon: CalendarCheck, step: '03', title: t('step03Title'), desc: t('step03Desc') },
+    { icon: Banknote,      step: '04', title: t('step04Title'), desc: t('step04Desc') },
+  ];
+
+  const TRUST_ITEMS = [
+    { icon: TrendingUp, title: t('trust1Title'), stat: t('trust1Stat'), body: t('trust1Desc') },
+    { icon: Globe,      title: t('trust2Title'), stat: t('trust2Stat'), body: t('trust2Desc') },
+    { icon: Languages,  title: t('trust3Title'), stat: t('trust3Stat'), body: t('trust3Desc') },
+    { icon: Percent,    title: t('trust4Title'), stat: t('trust4Stat'), body: t('trust4Desc') },
+  ];
+
   return (
     <div className="min-h-screen bg-paper">
       <HostTopNav />
 
-      {/* Hero — full-bleed photo card with ken-burns */}
+      {/* Hero */}
       <section className="pt-14 sm:pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-0">
           <HeroSection />
@@ -86,10 +49,10 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-14">
               <h2 className="font-display text-3xl sm:text-4xl font-medium text-ink mb-3">
-                How it works
+                {t('howItWorksTitle')}
               </h2>
               <p className="text-ink-mute max-w-md mx-auto">
-                From listing to your first payout in as little as a week.
+                {t('howItWorksDesc')}
               </p>
             </div>
 
@@ -121,23 +84,23 @@ export default function LandingPage() {
         <section id="commission" className="py-12 md:py-20 lg:py-28 border-t border-rule">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
             <h2 className="font-display text-3xl sm:text-5xl font-medium text-jade leading-tight mb-6">
-              Just 12% commission.
+              {t('commissionTitle')}
             </h2>
             <p className="text-lg text-ink leading-relaxed mb-2">
-              No setup fees. No monthly fees. No hidden charges.
+              {t('commissionDesc1')}
             </p>
             <p className="text-lg text-ink-soft leading-relaxed mb-10">
-              You set the price in IDR. You keep 88%. We earn only when you earn.
+              {t('commissionDesc2')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <div className="bg-surface rounded-xl px-8 py-4 shadow-sm">
-                <p className="text-xs text-ink-mute mb-0.5">You set</p>
-                <p className="font-mono text-2xl font-semibold text-ink">Rp 4,500,000<span className="text-sm font-sans font-normal text-ink-mute"> / night</span></p>
+                <p className="text-xs text-ink-mute mb-0.5">{t('youSet')}</p>
+                <p className="font-mono text-2xl font-semibold text-ink">Rp 4,500,000<span className="text-sm font-sans font-normal text-ink-mute"> {t('perNight')}</span></p>
               </div>
               <div className="flex items-center justify-center text-ink-mute font-medium">→</div>
               <div className="bg-jade rounded-xl px-8 py-4 shadow-sm">
-                <p className="text-xs text-white/70 mb-0.5">You keep (88%)</p>
-                <p className="font-mono text-2xl font-semibold text-white">Rp 3,960,000<span className="text-sm font-sans font-normal text-white/70"> / night</span></p>
+                <p className="text-xs text-white/70 mb-0.5">{t('youKeep')}</p>
+                <p className="font-mono text-2xl font-semibold text-white">Rp 3,960,000<span className="text-sm font-sans font-normal text-white/70"> {t('perNight')}</span></p>
               </div>
             </div>
           </div>
@@ -150,10 +113,10 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-12">
               <h2 className="font-display text-3xl sm:text-4xl font-medium text-ink mb-3">
-                Why hosts choose BaliVilla
+                {t('whyTitle')}
               </h2>
               <p className="text-ink-mute max-w-md mx-auto">
-                Built for Bali villa owners who want Chinese guests without the complexity.
+                {t('whyDesc')}
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -179,7 +142,7 @@ export default function LandingPage() {
         <section id="faq" className="py-12 md:py-20 border-t border-rule">
           <div className="max-w-2xl mx-auto px-4 sm:px-6">
             <h2 className="font-display text-3xl sm:text-4xl font-medium text-ink mb-12 text-center">
-              Frequently asked questions
+              {t('faqTitle')}
             </h2>
             <HostFaqAccordion />
           </div>
@@ -191,21 +154,21 @@ export default function LandingPage() {
         <section className="py-12 md:py-16 lg:py-24 border-t border-rule">
           <div className="max-w-lg mx-auto px-4 sm:px-6 text-center">
             <h2 className="font-display text-3xl sm:text-4xl font-medium text-ink leading-tight mb-4">
-              Ready to host?
+              {t('readyTitle')}
             </h2>
             <p className="text-base text-ink-soft leading-relaxed mb-8">
-              Join hundreds of Bali villa owners welcoming Chinese guests. Free to list. No commitment.
+              {t('readyDesc')}
             </p>
             <Link
               href="/signup"
               className="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-jade text-white font-semibold text-sm hover:bg-jade-deep transition-colors"
             >
-              Get started — it&apos;s free
+              {t('getStarted')}
               <ArrowRight className="size-4" />
             </Link>
             <p className="mt-4">
               <Link href="/login" className="text-sm text-ink-mute hover:text-jade transition-colors underline underline-offset-4">
-                Already a host? Log in
+                {t('alreadyHost')}
               </Link>
             </p>
           </div>

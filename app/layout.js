@@ -1,5 +1,7 @@
 import { Fraunces, Inter, Noto_Sans_SC, JetBrains_Mono } from 'next/font/google';
 import { Toaster } from 'sonner';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
 import { Providers } from '@/components/Providers';
 import './globals.css';
 
@@ -35,17 +37,22 @@ export const metadata = {
   icons: { icon: '/BaliVillalogo.png' },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`${fraunces.variable} ${inter.variable} ${notoSansSC.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Providers>
-          {children}
-          <Toaster position="bottom-right" richColors />
-        </Providers>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <Providers>
+            {children}
+            <Toaster position="bottom-right" richColors />
+          </Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

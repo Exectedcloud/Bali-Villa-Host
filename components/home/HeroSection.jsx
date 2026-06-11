@@ -3,14 +3,9 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useTranslations } from 'next-intl';
 
 const MotionLink = motion(Link);
-
-const CHECKS = [
-  'Free to list, no commitment',
-  'First booking in under 1 week',
-  'WeChat Pay & Alipay built in',
-];
 
 const container = {
   hidden: {},
@@ -23,6 +18,10 @@ const child = {
 };
 
 export function HeroSection() {
+  const t = useTranslations('home');
+
+  const checks = [t('check1'), t('check2'), t('check3')];
+
   return (
     <div className="relative min-h-[480px] sm:min-h-[580px] lg:min-h-[680px] rounded-2xl overflow-hidden flex items-end">
       {/* Ken-burns background */}
@@ -47,13 +46,12 @@ export function HeroSection() {
           variants={child}
           className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-white leading-[1.05] mb-4 sm:mb-6"
         >
-          List your Bali villa.{' '}
-          <span className="text-jade-soft">Reach Chinese guests.</span>
+          {t('heroTitle1')}{' '}
+          <span className="text-jade-soft">{t('heroTitle2')}</span>
         </motion.h1>
 
         <motion.p variants={child} className="text-base sm:text-lg text-white/80 leading-relaxed mb-8 max-w-lg">
-          Automatic translation. WeChat Pay &amp; Alipay. No language barrier. Keep 88% of every
-          booking — just 12% commission.
+          {t('heroDesc')}
         </motion.p>
 
         <motion.div variants={child} className="flex flex-col sm:flex-row gap-3 mb-10">
@@ -63,7 +61,7 @@ export function HeroSection() {
             transition={{ duration: 0.08, ease: 'linear' }}
             className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-jade text-white font-semibold text-sm hover:bg-jade-deep transition-colors"
           >
-            List your villa
+            {t('listVilla')}
             <ArrowRight className="size-4" />
           </MotionLink>
           <MotionLink
@@ -72,12 +70,12 @@ export function HeroSection() {
             transition={{ duration: 0.08, ease: 'linear' }}
             className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl border border-white/30 text-white font-medium text-sm hover:bg-white/10 transition-colors"
           >
-            Already a host? Log in
+            {t('loginHost')}
           </MotionLink>
         </motion.div>
 
         <motion.div variants={child} className="flex flex-wrap gap-5">
-          {CHECKS.map((text) => (
+          {checks.map((text) => (
             <span key={text} className="flex items-center gap-1.5 text-sm text-white/80">
               <CheckCircle className="size-4 text-jade-soft shrink-0" />
               {text}

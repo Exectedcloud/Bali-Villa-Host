@@ -4,86 +4,76 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Globe } from 'lucide-react';
+import { Menu, X, ChevronDown, LogOut, LayoutDashboard } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslations } from 'next-intl';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { cn } from '@/lib/utils';
+import { api } from '@/lib/api-client';
+import Avatar from '@/components/ui/Avatar';
 import { useLocale } from '@/providers/LocaleProvider';
 
-const LOCALE_LABELS = { id: 'ID', en: 'EN', zh: '中' };
+function useOptionalHost() {
+  const { data, isPending } = useQuery({
+    queryKey: ['host-me-public'],
+    queryFn: async () => {
+      try { return await api.get('/host/me/'); } catch { return null; }
+    },
+    retry: false,
+    staleTime: 60_000,
+  });
+  return { user: data?.user ?? null, host: data?.host ?? null, isPending };
+}
 
-function LangPill() {
-  const { locale, setLocale } = useLocale();
-  const [open, setOpen] = useState(false);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    if (!open) return;
-    function onDown(e) {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
-    }
-    document.addEventListener('mousedown', onDown);
-    return () => document.removeEventListener('mousedown', onDown);
-  }, [open]);
-
-  const OPTIONS = [
-    { code: 'id', label: 'Bahasa Indonesia' },
-    { code: 'en', label: 'English' },
-    { code: 'zh', label: '中文' },
-  ];
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="hidden sm:flex items-center gap-1.5 rounded-full border border-rule text-xs font-semibold px-3 py-1.5 text-ink-mute hover:border-jade hover:text-jade transition-colors"
-      >
-        <Globe className="size-3.5" />
-        {LOCALE_LABELS[locale] ?? locale.toUpperCase()}
-      </button>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.97, y: -4 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: -4 }}
-            transition={{ duration: 0.15, ease: 'easeOut' }}
-            className="absolute top-full right-0 mt-2 w-44 bg-surface border border-rule rounded-xl shadow-lg overflow-hidden z-50"
-          >
-            {OPTIONS.map(({ code, label }) => (
-              <button
-                key={code}
-                type="button"
-                onClick={() => { setLocale(code); setOpen(false); }}
-                className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors border-b border-rule last:border-0 ${
-                  locale === code
-                    ? 'bg-jade-soft text-jade'
-                    : 'text-ink-soft hover:bg-surface-alt hover:text-ink'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
+function displayName(user, host) {
+  const name = host?.displayName
+    ?? [user?.firstName, user?.lastName].filter(Boolean).join(' ');
+  return name || user?.email || '';
 }
 
 export function HostTopNav() {
   const pathname = usePathname();
+  const queryClient = useQueryClient();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const { locale, setLocale } = useLocale();
   const t = useTranslations('nav');
   const tAuth = useTranslations('auth.login');
+  const tNav = useTranslations('topnav');
+
+  const { user, host, isPending } = useOptionalHost();
+  const name = displayName(user, host);
 
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
+  useEffect(() => { setDropdownOpen(false); }, [pathname]);
+
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    function onDown(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setDropdownOpen(false);
+    }
+    document.addEventListener('mousedown', onDown);
+    return () => document.removeEventListener('mousedown', onDown);
+  }, [dropdownOpen]);
+
+  function handleLangToggle() {
+    setLocale(locale === 'id' ? 'en' : 'id');
+  }
+
+  async function handleLogout() {
+    setDropdownOpen(false);
+    setDrawerOpen(false);
+    try { await api.post('/auth/logout/', {}); } catch { /* ignore */ }
+    queryClient.setQueryData(['host-me-public'], null);
+    queryClient.invalidateQueries({ queryKey: ['host-me'] });
+  }
 
   const NAV_LINKS = [
-    { label: 'How it works', href: '/#how-it-works' },
-    { label: 'Commission',   href: '/#commission' },
-    { label: 'FAQ',          href: '/#faq' },
+    { label: tNav('howItWorks'), href: '/#how-it-works' },
+    { label: tNav('commission'), href: '/#commission' },
+    { label: tNav('faq'),        href: '/#faq' },
   ];
 
   return (
@@ -119,19 +109,87 @@ export function HostTopNav() {
 
           {/* Right cluster */}
           <div className="flex items-center gap-2 shrink-0">
-            <LangPill />
-            <Link
-              href="/login"
-              className="hidden sm:block text-sm font-medium px-3 py-2 rounded-lg text-ink-soft hover:bg-surface-alt hover:text-ink transition-colors"
+
+            {/* Language toggle pill — same style as balivilla-web */}
+            <button
+              type="button"
+              onClick={handleLangToggle}
+              className="hidden sm:flex items-center gap-px rounded-full border border-rule text-xs font-semibold px-3 py-1.5 hover:border-jade transition-colors"
+              title={locale === 'id' ? 'Switch to English' : 'Ganti ke Bahasa Indonesia'}
             >
-              {tAuth('submit')}
-            </Link>
-            <Link
-              href="/signup"
-              className="hidden sm:block text-sm font-semibold px-4 py-2 rounded-lg bg-jade text-white hover:bg-jade-deep transition-colors"
-            >
-              Get started
-            </Link>
+              <span className={locale === 'id' ? 'text-jade' : 'text-ink-mute'}>ID</span>
+              <span className="opacity-40 mx-0.5">/</span>
+              <span className={locale === 'en' ? 'text-jade' : 'text-ink-mute'}>EN</span>
+            </button>
+
+            {/* Logged-in: avatar + dropdown */}
+            {!isPending && user && (
+              <div ref={dropdownRef} className="relative hidden sm:block">
+                <button
+                  type="button"
+                  onClick={() => setDropdownOpen((o) => !o)}
+                  className="flex items-center gap-1.5 p-1 rounded-full hover:bg-surface-alt transition-colors"
+                  aria-label="Account menu"
+                >
+                  <Avatar src={user.avatarUrl} name={name} size={32} />
+                  <ChevronDown className={cn('size-3.5 text-ink-mute transition-transform duration-200', dropdownOpen && 'rotate-180')} />
+                </button>
+
+                <AnimatePresence>
+                  {dropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.97, y: -4 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.97, y: -4 }}
+                      transition={{ duration: 0.15, ease: 'easeOut' }}
+                      className="absolute top-full right-0 mt-2 w-56 bg-surface border border-rule rounded-xl shadow-lg overflow-hidden z-50"
+                    >
+                      <div className="px-4 py-3 border-b border-rule">
+                        <p className="text-sm font-semibold text-ink truncate">{name || user.email}</p>
+                        {name && <p className="text-xs text-mist truncate mt-0.5">{user.email}</p>}
+                      </div>
+                      <div className="py-1">
+                        <Link
+                          href="/dashboard"
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-ink-soft hover:bg-surface-alt hover:text-ink transition-colors"
+                        >
+                          <LayoutDashboard className="size-4 text-ink-mute" />
+                          {t('dashboard')}
+                        </Link>
+                      </div>
+                      <div className="border-t border-rule py-1">
+                        <button
+                          type="button"
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-danger hover:bg-danger/5 transition-colors"
+                        >
+                          <LogOut className="size-4" />
+                          {t('logOut')}
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+
+            {/* Not logged-in: login + get started */}
+            {!isPending && !user && (
+              <>
+                <Link
+                  href="/login"
+                  className="hidden sm:block text-sm font-medium px-3 py-2 rounded-lg text-ink-soft hover:bg-surface-alt hover:text-ink transition-colors"
+                >
+                  {tAuth('submit')}
+                </Link>
+                <Link
+                  href="/signup"
+                  className="hidden sm:block text-sm font-semibold px-4 py-2 rounded-lg bg-jade text-white hover:bg-jade-deep transition-colors"
+                >
+                  {tNav('getStarted')}
+                </Link>
+              </>
+            )}
 
             {/* Hamburger — mobile */}
             <button
@@ -192,49 +250,69 @@ export function HostTopNav() {
 
               <div className="border-t border-rule mx-4" />
 
-              <div className="flex flex-col gap-2 px-4 py-4">
-                <Link
-                  href="/login"
-                  onClick={() => setDrawerOpen(false)}
-                  className="w-full py-3.5 rounded-xl border border-rule text-sm font-semibold text-ink text-center hover:bg-surface-alt transition-colors"
-                >
-                  {tAuth('submit')}
-                </Link>
-                <Link
-                  href="/signup"
-                  onClick={() => setDrawerOpen(false)}
-                  className="w-full py-3.5 rounded-xl bg-jade text-white text-sm font-semibold text-center hover:bg-jade-deep transition-colors"
-                >
-                  Get started
-                </Link>
+              <div className="flex flex-col px-3 py-4">
+                {!isPending && user ? (
+                  <>
+                    <div className="flex items-center gap-3 px-4 py-3 mb-2">
+                      <Avatar src={user.avatarUrl} name={name} size={40} />
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-ink truncate">{name || user.email}</p>
+                        {name && <p className="text-xs text-mist truncate">{user.email}</p>}
+                      </div>
+                    </div>
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setDrawerOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-ink-soft hover:bg-surface-alt transition-colors"
+                    >
+                      <LayoutDashboard className="size-4 text-ink-mute" />
+                      {t('dashboard')}
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="flex items-center gap-3 px-4 py-3 mt-1 rounded-xl text-sm text-danger hover:bg-danger/5 transition-colors"
+                    >
+                      <LogOut className="size-4" />
+                      {t('logOut')}
+                    </button>
+                  </>
+                ) : (
+                  <div className="flex flex-col gap-2 px-1 py-1">
+                    <Link
+                      href="/login"
+                      onClick={() => setDrawerOpen(false)}
+                      className="w-full py-3.5 rounded-xl border border-rule text-sm font-semibold text-ink text-center hover:bg-surface-alt transition-colors"
+                    >
+                      {tAuth('submit')}
+                    </Link>
+                    <Link
+                      href="/signup"
+                      onClick={() => setDrawerOpen(false)}
+                      className="w-full py-3.5 rounded-xl bg-jade text-white text-sm font-semibold text-center hover:bg-jade-deep transition-colors"
+                    >
+                      {tNav('getStarted')}
+                    </Link>
+                  </div>
+                )}
               </div>
 
-              <div className="mt-auto px-5 pb-8 flex items-center gap-2">
-                <Globe className="size-4 text-ink-mute" />
-                {[{ code: 'id', label: 'ID' }, { code: 'en', label: 'EN' }, { code: 'zh', label: '中' }].map(({ code, label }, i, arr) => (
-                  <LangButtonMobile key={code} code={code} label={label} last={i === arr.length - 1} />
-                ))}
+              {/* Language toggle — bottom of drawer, same style as balivilla-web */}
+              <div className="mt-auto px-5 pb-8">
+                <button
+                  type="button"
+                  onClick={handleLangToggle}
+                  className="text-sm font-semibold hover:text-jade transition-colors"
+                >
+                  <span className={locale === 'id' ? 'text-jade' : 'text-ink-mute'}>ID</span>
+                  <span className="text-ink-mute mx-0.5">/</span>
+                  <span className={locale === 'en' ? 'text-jade' : 'text-ink-mute'}>EN</span>
+                </button>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </>
-  );
-}
-
-function LangButtonMobile({ code, label, last }) {
-  const { locale, setLocale } = useLocale();
-  return (
-    <>
-      <button
-        type="button"
-        onClick={() => setLocale(code)}
-        className={`text-sm font-medium transition-colors ${locale === code ? 'text-jade font-semibold' : 'text-ink-mute hover:text-jade'}`}
-      >
-        {label}
-      </button>
-      {!last && <span className="text-ink-mute/40 text-xs">·</span>}
     </>
   );
 }

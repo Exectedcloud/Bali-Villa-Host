@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, Home, Calendar, BookOpen, MessageSquare,
   BarChart3, Banknote, User, ChevronLeft, ChevronRight,
-  LogOut, ExternalLink, Menu, X, Globe, CheckCircle,
+  LogOut, ExternalLink, Menu, X,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslations } from 'next-intl';
@@ -23,56 +23,38 @@ function isActive(pathname, href) {
 }
 
 function LanguageSwitcher({ collapsed }) {
-  const [open, setOpen] = useState(false);
   const { locale, setLocale } = useLocale();
-  const t = useTranslations('language');
 
-  const OPTIONS = [
-    { code: 'id', label: t('id') },
-    { code: 'en', label: t('en') },
-    { code: 'zh', label: t('zh') },
-  ];
+  function handleLangToggle() {
+    setLocale(locale === 'id' ? 'en' : 'id');
+  }
 
-  const currentLabel = OPTIONS.find((o) => o.code === locale)?.label ?? locale.toUpperCase();
-
-  return (
-    <div className="relative">
+  if (collapsed) {
+    return (
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
-        className={cn(
-          'flex items-center gap-1.5 w-full rounded-lg px-2 py-1.5 text-xs text-ink-mute hover:bg-surface-alt hover:text-ink transition-colors',
-          collapsed && 'justify-center',
-        )}
-        title={t('label')}
+        onClick={handleLangToggle}
+        className="flex items-center justify-center w-full rounded-lg px-2 py-1.5 text-xs font-semibold hover:bg-surface-alt transition-colors"
+        title={locale === 'id' ? 'Switch to English' : 'Ganti ke Bahasa Indonesia'}
       >
-        <Globe className="size-3.5 shrink-0" />
-        {!collapsed && <span>{currentLabel}</span>}
+        <span className={locale === 'id' ? 'text-jade' : 'text-ink-mute'}>ID</span>
+        <span className="opacity-40 mx-0.5">/</span>
+        <span className={locale === 'en' ? 'text-jade' : 'text-ink-mute'}>EN</span>
       </button>
+    );
+  }
 
-      {open && (
-        <>
-          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute bottom-full left-0 mb-1 w-40 bg-surface border border-rule rounded-xl shadow-lg overflow-hidden z-50">
-            {OPTIONS.map(({ code, label }) => (
-              <button
-                key={code}
-                type="button"
-                onClick={() => { setLocale(code); setOpen(false); }}
-                className={cn(
-                  'w-full text-left px-3.5 py-2.5 text-xs font-medium transition-colors border-b border-rule last:border-0',
-                  locale === code
-                    ? 'bg-jade-soft text-jade'
-                    : 'text-ink-soft hover:bg-surface-alt hover:text-ink',
-                )}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
-    </div>
+  return (
+    <button
+      type="button"
+      onClick={handleLangToggle}
+      className="flex items-center gap-px rounded-full border border-rule text-xs font-semibold px-3 py-1.5 hover:border-jade transition-colors"
+      title={locale === 'id' ? 'Switch to English' : 'Ganti ke Bahasa Indonesia'}
+    >
+      <span className={locale === 'id' ? 'text-jade' : 'text-ink-mute'}>ID</span>
+      <span className="opacity-40 mx-0.5">/</span>
+      <span className={locale === 'en' ? 'text-jade' : 'text-ink-mute'}>EN</span>
+    </button>
   );
 }
 
@@ -107,11 +89,6 @@ export function HostSidebar() {
     { key: 'profile',      href: '/dashboard/profile',      icon: User },
   ];
 
-  const isAdmin = user?.roles?.includes('admin');
-  const ADMIN_NAV = isAdmin ? [
-    { key: 'adminReview', href: '/admin', icon: CheckCircle },
-  ] : [];
-
   function NavLink({ item, onClick }) {
     const active = isActive(pathname, item.href);
     const Icon = item.icon;
@@ -134,7 +111,7 @@ export function HostSidebar() {
     <>
       {/* ── Mobile header + hamburger ──────────────────────────────────────── */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-surface border-b border-rule h-14 flex items-center justify-between px-4 shrink-0">
-        <Link href="/dashboard" className="flex items-center gap-2 min-w-0">
+        <Link href="/" className="flex items-center gap-2 min-w-0">
           <Image src="/BaliVillalogo.png" alt="BaliVilla" width={120} height={30} className="h-7 w-auto" priority />
           <span className="text-xs font-medium text-mist hidden sm:inline">{t('forHosts')}</span>
         </Link>
@@ -168,7 +145,7 @@ export function HostSidebar() {
             >
               {/* Drawer header */}
               <div className="flex items-center justify-between px-4 h-14 border-b border-rule shrink-0">
-                <Link href="/dashboard" onClick={() => setDrawerOpen(false)}>
+                <Link href="/" onClick={() => setDrawerOpen(false)}>
                   <Image src="/BaliVillalogo.png" alt="BaliVilla" width={120} height={30} className="h-7 w-auto" />
                 </Link>
                 <button
@@ -239,13 +216,13 @@ export function HostSidebar() {
         {/* Logo */}
         <div className="flex items-center h-16 border-b border-rule px-4 shrink-0 gap-3">
           {!collapsed && (
-            <Link href="/dashboard" className="flex items-center gap-2 flex-1 min-w-0">
+            <Link href="/" className="flex items-center gap-2 flex-1 min-w-0">
               <Image src="/BaliVillalogo.png" alt="BaliVilla" width={140} height={32} className="h-8 w-auto" />
               <span className="text-xs font-medium text-mist whitespace-nowrap">{t('forHosts')}</span>
             </Link>
           )}
           {collapsed && (
-            <Link href="/dashboard" className="size-8 rounded-lg bg-jade flex items-center justify-center shrink-0 mx-auto">
+            <Link href="/" className="size-8 rounded-lg bg-jade flex items-center justify-center shrink-0 mx-auto">
               <span className="text-white text-xs font-bold">BV</span>
             </Link>
           )}
@@ -297,33 +274,6 @@ export function HostSidebar() {
             })}
           </div>
 
-          {ADMIN_NAV.length > 0 && (
-            <div className="px-4 mb-4">
-               {!collapsed && <p className="text-[10px] font-bold text-mist uppercase tracking-widest mb-3 ml-2">Admin Panel</p>}
-               <div className="space-y-0.5">
-                  {ADMIN_NAV.map((item) => {
-                    const active = isActive(pathname, item.href);
-                    const Icon = item.icon;
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        title={collapsed ? (t(item.key) || 'Review') : undefined}
-                        className={cn(
-                          'flex items-center py-2.5 rounded-xl text-sm font-medium transition-colors duration-150',
-                          collapsed
-                            ? cn('justify-center px-2', active ? 'bg-jade-soft text-jade' : 'text-ink-mute hover:bg-surface-alt hover:text-jade')
-                            : cn('gap-3 px-3 border-l-4', active ? 'bg-jade-soft text-jade border-jade' : 'text-ink-mute hover:bg-surface-alt hover:text-jade border-transparent'),
-                        )}
-                      >
-                        <Icon className="size-5 shrink-0" />
-                        {!collapsed && <span className="flex-1">{t(item.key) || 'Review Applications'}</span>}
-                      </Link>
-                    );
-                  })}
-               </div>
-            </div>
-          )}
         </nav>
 
         {/* Bottom user section */}

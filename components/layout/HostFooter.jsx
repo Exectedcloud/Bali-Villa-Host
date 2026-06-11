@@ -1,37 +1,40 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { getTranslations } from 'next-intl/server';
 
-const COLS = [
-  {
-    heading: 'For Hosts',
-    links: [
-      { label: 'Host resources',    href: '#' },
-      { label: 'Host insurance',    href: '#' },
-      { label: 'Tax info',          href: '#' },
-      { label: 'Pricing calculator',href: '#' },
-    ],
-  },
-  {
-    heading: 'Support',
-    links: [
-      { label: 'Help center',    href: '#' },
-      { label: 'Contact us',     href: '#' },
-      { label: 'Trust & safety', href: '#' },
-      { label: 'Report an issue',href: '#' },
-    ],
-  },
-  {
-    heading: 'Company',
-    links: [
-      { label: 'About BaliVilla', href: '#' },
-      { label: 'Press',           href: '#' },
-      { label: 'Careers',         href: '#' },
-      { label: 'Guest site',      href: process.env.NEXT_PUBLIC_GUEST_URL ?? 'http://localhost:3000' },
-    ],
-  },
-];
+export async function HostFooter() {
+  const t = await getTranslations('footer');
 
-export function HostFooter() {
+  const COLS = [
+    {
+      heading: t('forHosts'),
+      links: [
+        { label: t('hostResources'),  href: '#' },
+        { label: t('hostInsurance'),  href: '#' },
+        { label: t('taxInfo'),        href: '#' },
+        { label: t('pricingCalc'),    href: '#' },
+      ],
+    },
+    {
+      heading: t('support'),
+      links: [
+        { label: t('helpCenter'),   href: '#' },
+        { label: t('contactUs'),    href: '#' },
+        { label: t('trustSafety'), href: '#' },
+        { label: t('reportIssue'), href: '#' },
+      ],
+    },
+    {
+      heading: t('company'),
+      links: [
+        { label: t('about'),     href: '#' },
+        { label: t('press'),     href: '#' },
+        { label: t('careers'),   href: '#' },
+        { label: t('guestSite'), href: process.env.NEXT_PUBLIC_GUEST_URL ?? 'http://localhost:3000' },
+      ],
+    },
+  ];
+
   return (
     <footer className="bg-surface-alt border-t border-rule mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
@@ -48,7 +51,7 @@ export function HostFooter() {
               />
             </Link>
             <p className="text-sm text-ink-mute leading-relaxed max-w-[200px]">
-              Connecting Indonesian villa owners with Chinese travellers.
+              {t('tagline')}
             </p>
           </div>
 
@@ -74,11 +77,11 @@ export function HostFooter() {
         </div>
 
         <div className="pt-8 border-t border-rule flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-ink-mute">
-          <p>© 2026 BaliVilla. All rights reserved.</p>
+          <p>{t('rights')}</p>
           <div className="flex items-center gap-5">
-            <Link href="#" className="hover:text-jade transition-colors">Terms</Link>
-            <Link href="#" className="hover:text-jade transition-colors">Privacy</Link>
-            <Link href="#" className="hover:text-jade transition-colors">Cookies</Link>
+            <Link href="#" className="hover:text-jade transition-colors">{t('terms')}</Link>
+            <Link href="#" className="hover:text-jade transition-colors">{t('privacy')}</Link>
+            <Link href="#" className="hover:text-jade transition-colors">{t('cookies')}</Link>
           </div>
         </div>
       </div>
