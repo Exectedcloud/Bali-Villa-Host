@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Search, ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Search, ChevronLeft, ChevronRight, CalendarDays, MessageSquare } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -13,11 +14,26 @@ import Avatar from '@/components/ui/Avatar';
 const PAGE_SIZE = 10;
 
 export default function ReservationsPage() {
-  const t  = useTranslations('reservations');
-  const qc = useQueryClient();
+  const t      = useTranslations('reservations');
+  const router = useRouter();
+  const qc     = useQueryClient();
   const [tab, setTab]       = useState('all');
   const [search, setSearch] = useState('');
   const [page, setPage]     = useState(1);
+  const [msgLoading, setMsgLoading] = useState(null);
+
+  async function openGuestMessage(bookingId) {
+    if (msgLoading) return;
+    setMsgLoading(bookingId);
+    try {
+      const res = await api.post('/host/conversations/', { bookingId });
+      router.push(`/dashboard/messages?convId=${res.conversation.id}`);
+    } catch {
+      toast.error('Could not open conversation.');
+    } finally {
+      setMsgLoading(null);
+    }
+  }
 
   const STATUS_META = {
     confirmed:        { label: t('status.confirmed'),       cls: 'bg-jade/10 text-jade' },
@@ -180,9 +196,20 @@ export default function ReservationsPage() {
                   <button type="button" onClick={() => declineMutation.mutate(bk.id)} disabled={declineMutation.isPending} className="flex-1 py-2.5 rounded-lg border border-rule text-danger text-xs font-semibold hover:border-danger disabled:opacity-50 transition-colors min-h-[44px]">{t('decline')}</button>
                 </div>
               ) : (
-                <Link href={`/dashboard/reservations/${bk.id}`} className="w-full py-2.5 rounded-lg border border-rule text-xs font-semibold text-ink-soft hover:border-jade hover:text-jade transition-colors text-center min-h-[44px] flex items-center justify-center">
-                  {t('viewDetails')}
-                </Link>
+                <div className="flex gap-2">
+                  <Link href={`/dashboard/reservations/${bk.id}`} className="flex-1 py-2.5 rounded-lg border border-rule text-xs font-semibold text-ink-soft hover:border-jade hover:text-jade transition-colors text-center min-h-[44px] flex items-center justify-center">
+                    {t('viewDetails')}
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => openGuestMessage(bk.id)}
+                    disabled={msgLoading === bk.id}
+                    className="size-11 flex items-center justify-center rounded-lg border border-rule text-ink-mute hover:border-jade hover:text-jade disabled:opacity-50 transition-colors shrink-0"
+                    title="Message guest"
+                  >
+                    <MessageSquare className="size-4" />
+                  </button>
+                </div>
               )}
             </div>
           );
@@ -295,12 +322,23 @@ export default function ReservationsPage() {
                           </button>
                         </div>
                       ) : (
-                        <Link
-                          href={`/dashboard/reservations/${bk.id}`}
-                          className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-rule text-ink-soft hover:border-jade hover:text-jade transition-colors whitespace-nowrap"
-                        >
-                          {t('view')}
-                        </Link>
+                        <div className="flex items-center gap-1.5">
+                          <Link
+                            href={`/dashboard/reservations/${bk.id}`}
+                            className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-rule text-ink-soft hover:border-jade hover:text-jade transition-colors whitespace-nowrap"
+                          >
+                            {t('view')}
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => openGuestMessage(bk.id)}
+                            disabled={msgLoading === bk.id}
+                            className="size-7 flex items-center justify-center rounded-lg border border-rule text-ink-mute hover:border-jade hover:text-jade disabled:opacity-50 transition-colors"
+                            title="Message guest"
+                          >
+                            <MessageSquare className="size-3.5" />
+                          </button>
+                        </div>
                       )}
                     </td>
                   </tr>

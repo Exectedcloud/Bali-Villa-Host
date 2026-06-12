@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, CheckCircle2, Circle, Dot, MessageSquare, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
@@ -23,6 +23,7 @@ export default function ReservationDetailPage() {
   const t = useTranslations('reservationDetail');
   const tCommon = useTranslations('common');
   const { id } = useParams();
+  const router = useRouter();
   const qc = useQueryClient();
 
   const STATUS_META = {
@@ -68,6 +69,15 @@ export default function ReservationDetailPage() {
       qc.invalidateQueries({ queryKey: ['host-bookings'] });
     },
     onError: (err) => toast.error(err.message || 'Failed to decline booking.'),
+  });
+
+  const msgGuestMutation = useMutation({
+    mutationFn: () => api.post('/host/conversations/', { bookingId: parseInt(id, 10) }),
+    onSuccess: (res) => {
+      const convId = res.conversation?.id;
+      router.push(`/dashboard/messages?convId=${convId}`);
+    },
+    onError: () => toast.error('Could not open conversation.'),
   });
 
   if (isPending) {
@@ -135,10 +145,15 @@ export default function ReservationDetailPage() {
                   {bk.guestPhone && <><span>·</span><span>{bk.guestPhone}</span></>}
                 </div>
               </div>
-              <Link href="/dashboard/messages" className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-rule text-xs font-semibold text-ink-soft hover:border-jade hover:text-jade transition-colors">
+              <button
+                type="button"
+                onClick={() => msgGuestMutation.mutate()}
+                disabled={msgGuestMutation.isPending}
+                className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-rule text-xs font-semibold text-ink-soft hover:border-jade hover:text-jade disabled:opacity-50 transition-colors"
+              >
                 <MessageSquare className="size-3.5" />
-                {t('actions.messageGuest')}
-              </Link>
+                {msgGuestMutation.isPending ? '…' : t('actions.messageGuest')}
+              </button>
             </div>
             {bk.guestNote && (
               <div className="bg-warn/5 border border-warn/20 rounded-lg px-3 py-2.5 text-xs text-ink-soft leading-relaxed">
@@ -291,9 +306,15 @@ export default function ReservationDetailPage() {
                 <button type="button" onClick={() => toast.success(t('toast.markCheckIn'))} className="w-full h-10 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep transition-colors">
                   {t('actions.markCheckIn')}
                 </button>
-                <Link href="/dashboard/messages" className="w-full h-10 rounded-xl border border-rule text-sm font-semibold text-ink-soft hover:border-jade hover:text-jade transition-colors flex items-center justify-center gap-2">
-                  <MessageSquare className="size-4" /> {t('actions.messageGuest')}
-                </Link>
+                <button
+                  type="button"
+                  onClick={() => msgGuestMutation.mutate()}
+                  disabled={msgGuestMutation.isPending}
+                  className="w-full h-10 rounded-xl border border-rule text-sm font-semibold text-ink-soft hover:border-jade hover:text-jade disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+                >
+                  <MessageSquare className="size-4" />
+                  {msgGuestMutation.isPending ? '…' : t('actions.messageGuest')}
+                </button>
                 <button type="button" onClick={() => toast.error(t('toast.cancel'))} className="w-full h-10 rounded-xl border border-danger/20 text-danger text-sm font-semibold hover:bg-danger/5 transition-colors">
                   {t('actions.cancelBooking')}
                 </button>
@@ -305,9 +326,15 @@ export default function ReservationDetailPage() {
                 <button type="button" onClick={() => toast.success(t('toast.markCheckOut'))} className="w-full h-10 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep transition-colors">
                   {t('actions.markCheckOut')}
                 </button>
-                <Link href="/dashboard/messages" className="w-full h-10 rounded-xl border border-rule text-sm font-semibold text-ink-soft hover:border-jade hover:text-jade transition-colors flex items-center justify-center gap-2">
-                  <MessageSquare className="size-4" /> {t('actions.messageGuest')}
-                </Link>
+                <button
+                  type="button"
+                  onClick={() => msgGuestMutation.mutate()}
+                  disabled={msgGuestMutation.isPending}
+                  className="w-full h-10 rounded-xl border border-rule text-sm font-semibold text-ink-soft hover:border-jade hover:text-jade disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+                >
+                  <MessageSquare className="size-4" />
+                  {msgGuestMutation.isPending ? '…' : t('actions.messageGuest')}
+                </button>
                 <button type="button" onClick={() => toast.info(t('toast.reportIssue'))} className="w-full h-10 rounded-xl border border-rule text-sm font-semibold text-ink-soft hover:border-warn hover:text-warn transition-colors flex items-center justify-center gap-2">
                   <AlertTriangle className="size-4" /> {t('actions.reportIssue')}
                 </button>
@@ -319,9 +346,15 @@ export default function ReservationDetailPage() {
                 <button type="button" onClick={() => toast.info(t('toast.viewReview'))} className="w-full h-10 rounded-xl bg-jade text-white text-sm font-semibold hover:bg-jade-deep transition-colors">
                   {t('actions.viewReview')}
                 </button>
-                <Link href="/dashboard/messages" className="w-full h-10 rounded-xl border border-rule text-sm font-semibold text-ink-soft hover:border-jade hover:text-jade transition-colors flex items-center justify-center gap-2">
-                  <MessageSquare className="size-4" /> {t('actions.messageGuest')}
-                </Link>
+                <button
+                  type="button"
+                  onClick={() => msgGuestMutation.mutate()}
+                  disabled={msgGuestMutation.isPending}
+                  className="w-full h-10 rounded-xl border border-rule text-sm font-semibold text-ink-soft hover:border-jade hover:text-jade disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+                >
+                  <MessageSquare className="size-4" />
+                  {msgGuestMutation.isPending ? '…' : t('actions.messageGuest')}
+                </button>
               </>
             )}
 
