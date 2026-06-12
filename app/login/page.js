@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Eye, EyeOff, MessageCircle } from 'lucide-react';
+import { Eye, EyeOff, MessageCircle, ArrowLeft } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
@@ -64,6 +64,12 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-paper flex flex-col items-center justify-center px-4 py-12">
+      <div className="w-full max-w-sm flex mb-3">
+        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-ink-mute hover:text-ink transition-colors">
+          <ArrowLeft className="size-4" />
+          Back to home
+        </Link>
+      </div>
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2.5 mb-8">
         <Image src="/BaliVillalogo.png" alt="BaliVilla" width={160} height={40} className="h-10 w-auto" priority />
@@ -179,7 +185,7 @@ export default function LoginPage() {
         <p className="text-center text-xs text-ink-mute mt-2">
           {t('guestLink')}{' '}
           <a
-            href="http://localhost:3000"
+            href={process.env.NEXT_PUBLIC_WEB_URL ?? 'http://localhost:3000'}
             className="text-jade hover:text-jade-deep font-medium transition-colors"
           >
             {t('visitBaliVilla')}

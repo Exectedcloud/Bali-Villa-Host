@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Eye, EyeOff, ChevronDown } from 'lucide-react';
+import { Eye, EyeOff, ChevronDown, ArrowLeft } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
@@ -95,6 +95,12 @@ export default function SignupPage() {
   if (submitted) {
     return (
       <div className="min-h-screen bg-paper flex flex-col items-center justify-center px-4 py-12">
+        <div className="w-full max-w-sm flex mb-3">
+          <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-ink-mute hover:text-ink transition-colors">
+            <ArrowLeft className="size-4" />
+            Back to home
+          </Link>
+        </div>
         <Link href="/" className="flex items-center gap-2.5 mb-8">
           <Image src="/BaliVillalogo.png" alt="BaliVilla" width={160} height={40} className="h-10 w-auto" priority />
           <span className="text-sm font-medium text-ink-mute">{tNav('forHosts')}</span>
@@ -124,6 +130,12 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen bg-paper flex flex-col items-center justify-center px-4 py-12">
+      <div className="w-full max-w-sm flex mb-3">
+        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-ink-mute hover:text-ink transition-colors">
+          <ArrowLeft className="size-4" />
+          Back to home
+        </Link>
+      </div>
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2.5 mb-8">
         <Image src="/BaliVillalogo.png" alt="BaliVilla" width={160} height={40} className="h-10 w-auto" priority />
@@ -279,11 +291,11 @@ export default function SignupPage() {
             />
             <span className="text-xs text-ink-soft leading-relaxed">
               I agree to the{' '}
-              <Link href="/terms" className="text-jade hover:text-jade-deep underline underline-offset-2">
+              <Link href="/terms" target="_blank" className="text-jade hover:text-jade-deep underline underline-offset-2 transition-colors">
                 Host Terms
               </Link>{' '}
               and{' '}
-              <Link href="/privacy" className="text-jade hover:text-jade-deep underline underline-offset-2">
+              <Link href="/privacy" target="_blank" className="text-jade hover:text-jade-deep underline underline-offset-2 transition-colors">
                 Privacy Policy
               </Link>
             </span>

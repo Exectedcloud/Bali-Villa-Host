@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# BaliVilla Host Portal
 
-## Getting Started
+Next.js 16 host-facing management site for host.balivilla.com. For Bali villa owners to manage listings, bookings, and payouts.
 
-First, run the development server:
+## Prerequisites
+
+- Node.js 20+
+- The Django backend (`balivilla-api`) running on port 8000
+- The guest site (`balivilla-web`) running on port 3000 (optional — needed for "Preview as guest" links)
+
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 1. Install dependencies
+npm install
+
+# 2. Create your local env file
+cp .env.example .env.local
+# Defaults point to localhost:8000 (API) and localhost:3000 (guest site)
+
+# 3. Start the dev server (runs on port 3001 to avoid conflict with balivilla-web)
+npm run dev -- -p 3001
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3001](http://localhost:3001).
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+> Auth requires the backend to be running. The dashboard UI renders with mock/empty states without it.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project structure
 
-## Learn More
+```
+app/
+  login/          # Host login page
+  signup/         # Host registration
+  dashboard/      # Authenticated dashboard (sidebar layout)
+    page.js       # Overview / metrics
+    listings/     # Property management
+    reservations/ # Booking management
+    messages/     # Guest chat
+    calendar/     # Availability
+    insights/     # Analytics
+    payouts/      # Earnings
+    profile/      # Settings
+components/
+  layout/         # Sidebar, TopBar
+  ui/             # Shared UI atoms
+lib/
+  api-client.js   # Fetch wrapper
+messages/
+  en.json         # English strings
+  id.json         # Indonesian strings
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Common issues
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**"Cannot find module" on first run** — run `npm install` first.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**API errors** — start `balivilla-api` with `python manage.py runserver`.
 
-## Deploy on Vercel
+**Port conflict** — if port 3001 is taken, pick any free port: `npm run dev -- -p 3002`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**"Visit BaliVilla" link goes nowhere** — start `balivilla-web` on port 3000, or update `NEXT_PUBLIC_WEB_URL` in `.env.local`.

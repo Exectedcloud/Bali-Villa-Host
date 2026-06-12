@@ -239,7 +239,7 @@ function ListingCard({ villa, onTogglePause }) {
               {isPaused ? <PlayCircle className="size-4" /> : <PauseCircle className="size-4" />}
             </button>
             <a
-              href={`http://localhost:3000/villa/${villa.slug}`}
+              href={`${process.env.NEXT_PUBLIC_WEB_URL ?? 'http://localhost:3000'}/villa/${villa.slug}`}
               target="_blank"
               rel="noreferrer"
               title={t('card.previewAsGuest')}
